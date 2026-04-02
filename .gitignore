@@ -1,0 +1,30 @@
+# OMNeT++ & C++ Derleme Dosyaları
+*.o
+*.out
+*.exe
+*.dll
+*.so
+/out/
+/results/
+*.sca
+*.vec
+*.vci
+
+# Python & Yapay Zeka Dosyaları
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.csv
+*.dat
+
+# Web / UI Tasarım (Node.js vb. kullanırsanız diye)
+node_modules/
+.env
+
+# İşletim Sistemi ve Editör Dosyaları
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
