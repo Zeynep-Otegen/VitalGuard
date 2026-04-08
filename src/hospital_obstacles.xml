@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <obstacles>
+        <obstacle x="250" y="50" z="0" width="20" height="300" depth="10" shape="cuboid" material="concrete" attenuation="50dB">
+            <appearance color="red" opacity="1.0"/>
+        </obstacle>
+    </obstacles>
+</configuration>

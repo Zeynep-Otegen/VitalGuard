@@ -1,0 +1,711 @@
+version 3
+run Wireless11-0-20260405-20:16:31-2080
+attr configname Wireless11
+attr datetime 20260405-20:16:31
+attr datetimef 20260405-201631
+attr experiment Wireless11
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network VitalGuardNet
+attr processid 2080
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config image-path ../inet4.5/images
+config description "Adding obstacle to the environment"
+config extends General
+config *.host*.mobility.initialZ 1.7m
+config *.physicalEnvironment.config "xmldoc(\"hospital_obstacles.xml\")"
+config *.radio.Medium.obstacleLoss.typename IdealObstacleLoss
+config network VitalGuardNet
+
+par VitalGuardNet.visualizer.sceneVisualizer[0] typename "\"inet.visualizer.canvas.scene.SceneCanvasVisualizer\""
+par VitalGuardNet.visualizer.sceneVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.sceneVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.sceneVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.sceneVisualizer[0] physicalEnvironmentModule "\"physicalEnvironment\""
+par VitalGuardNet.visualizer.sceneVisualizer[0] networkNodeVisualizerModule "\"VitalGuardNet.visualizer.networkNodeVisualizer[0]\""
+par VitalGuardNet.visualizer.sceneVisualizer[0] axisLength "nan m"
+attr mutable ""
+attr unit m
+par VitalGuardNet.visualizer.sceneVisualizer[0] animationSpeed 0
+par VitalGuardNet.visualizer.sceneVisualizer[0] sceneMinX "nan m"
+attr unit m
+par VitalGuardNet.visualizer.sceneVisualizer[0] sceneMinY "nan m"
+attr unit m
+par VitalGuardNet.visualizer.sceneVisualizer[0] sceneMinZ "nan m"
+attr unit m
+par VitalGuardNet.visualizer.sceneVisualizer[0] sceneMaxX "nan m"
+attr unit m
+par VitalGuardNet.visualizer.sceneVisualizer[0] sceneMaxY "nan m"
+attr unit m
+par VitalGuardNet.visualizer.sceneVisualizer[0] sceneMaxZ "nan m"
+attr unit m
+par VitalGuardNet.visualizer.sceneVisualizer[0] zIndex 0
+par VitalGuardNet.visualizer.sceneVisualizer[0] viewAngle "\"x right y down z out\""
+attr mutable ""
+par VitalGuardNet.visualizer.sceneVisualizer[0] viewScale "\"1 1\""
+attr mutable ""
+par VitalGuardNet.visualizer.sceneVisualizer[0] viewTranslation "\"0 0\""
+attr mutable ""
+par VitalGuardNet.visualizer.sceneVisualizer[0] descriptionFigure "\"\""
+par VitalGuardNet.visualizer.physicalEnvironmentVisualizer[0] typename "\"inet.visualizer.canvas.environment.PhysicalEnvironmentCanvasVisualizer\""
+par VitalGuardNet.visualizer.physicalEnvironmentVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.physicalEnvironmentVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.physicalEnvironmentVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.physicalEnvironmentVisualizer[0] physicalEnvironmentModule "\"physicalEnvironment\""
+par VitalGuardNet.visualizer.physicalEnvironmentVisualizer[0] displayObjects true
+par VitalGuardNet.visualizer.physicalEnvironmentVisualizer[0] zIndex 0
+par VitalGuardNet.visualizer.networkNodeVisualizer[0] typename "\"inet.visualizer.canvas.scene.NetworkNodeCanvasVisualizer\""
+par VitalGuardNet.visualizer.networkNodeVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.networkNodeVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.networkNodeVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.networkNodeVisualizer[0] nodeFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.networkNodeVisualizer[0] annotationSpacing 4
+par VitalGuardNet.visualizer.networkNodeVisualizer[0] placementPenalty 10
+par VitalGuardNet.visualizer.networkNodeVisualizer[0] zIndex 0
+par VitalGuardNet.visualizer.networkConnectionVisualizer[0] typename "\"inet.visualizer.canvas.scene.NetworkConnectionCanvasVisualizer\""
+par VitalGuardNet.visualizer.networkConnectionVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.networkConnectionVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.networkConnectionVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.networkConnectionVisualizer[0] displayNetworkConnections true
+par VitalGuardNet.visualizer.networkConnectionVisualizer[0] nodeFilter "\"\""
+attr mutable ""
+par VitalGuardNet.visualizer.networkConnectionVisualizer[0] lineColor "\"black\""
+par VitalGuardNet.visualizer.networkConnectionVisualizer[0] lineStyle "\"solid\""
+par VitalGuardNet.visualizer.networkConnectionVisualizer[0] lineWidth 1
+par VitalGuardNet.visualizer.networkConnectionVisualizer[0] zIndex 0
+par VitalGuardNet.visualizer.mobilityVisualizer[0] typename "\"inet.visualizer.canvas.mobility.MobilityCanvasVisualizer\""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] networkNodeVisualizerModule "\"VitalGuardNet.visualizer.networkNodeVisualizer[0]\""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] displayMobility true
+par VitalGuardNet.visualizer.mobilityVisualizer[0] animationSpeed 0
+par VitalGuardNet.visualizer.mobilityVisualizer[0] moduleFilter "\"**.mobility\""
+attr mutable ""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] displayPositions false
+par VitalGuardNet.visualizer.mobilityVisualizer[0] positionCircleRadius 4
+par VitalGuardNet.visualizer.mobilityVisualizer[0] positionCircleLineWidth 1
+par VitalGuardNet.visualizer.mobilityVisualizer[0] positionCircleLineColor "\"dark\""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] positionCircleFillColor "\"dark\""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] displayOrientations false
+par VitalGuardNet.visualizer.mobilityVisualizer[0] orientationPieRadius 32
+par VitalGuardNet.visualizer.mobilityVisualizer[0] orientationPieSize 0.2
+par VitalGuardNet.visualizer.mobilityVisualizer[0] orientationPieOpacity 0.25
+par VitalGuardNet.visualizer.mobilityVisualizer[0] orientationLineColor "\"black\""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] orientationLineStyle "\"solid\""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] orientationLineWidth 1
+par VitalGuardNet.visualizer.mobilityVisualizer[0] orientationFillColor "\"blue\""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] displayVelocities false
+par VitalGuardNet.visualizer.mobilityVisualizer[0] velocityArrowScale 1
+par VitalGuardNet.visualizer.mobilityVisualizer[0] velocityLineColor "\"black\""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] velocityLineStyle "\"solid\""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] velocityLineWidth 1
+par VitalGuardNet.visualizer.mobilityVisualizer[0] displayMovementTrails false
+par VitalGuardNet.visualizer.mobilityVisualizer[0] movementTrailLineColor "\"dark\""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] movementTrailLineStyle "\"solid\""
+par VitalGuardNet.visualizer.mobilityVisualizer[0] movementTrailLineWidth 1
+par VitalGuardNet.visualizer.mobilityVisualizer[0] trailLength 100
+par VitalGuardNet.visualizer.mobilityVisualizer[0] zIndex 0
+par VitalGuardNet.visualizer.statisticVisualizer[0] typename "\"inet.visualizer.canvas.common.StatisticCanvasVisualizer\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] networkNodeVisualizerModule "\"VitalGuardNet.visualizer.networkNodeVisualizer[0]\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] displayStatistics true
+par VitalGuardNet.visualizer.statisticVisualizer[0] signalName "\"\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] statisticName "\"\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] statisticUnit "\"\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] statisticExpression "\"\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] sourceFilter "\"**\""
+attr mutable ""
+par VitalGuardNet.visualizer.statisticVisualizer[0] format "\"%n: %v %u\""
+attr mutable ""
+par VitalGuardNet.visualizer.statisticVisualizer[0] unit "\"\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] font "\"<default>\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] textColor "\"black\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] backgroundColor "\"white\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] opacity 1
+par VitalGuardNet.visualizer.statisticVisualizer[0] placementHint "\"top\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] placementPriority 0
+par VitalGuardNet.visualizer.statisticVisualizer[0] zIndex 10
+par VitalGuardNet.visualizer.statisticVisualizer[0] propertyName "\"\""
+par VitalGuardNet.visualizer.statisticVisualizer[0] propertyIndex "\"\""
+par VitalGuardNet.visualizer.infoVisualizer[0] typename "\"inet.visualizer.canvas.common.InfoCanvasVisualizer\""
+par VitalGuardNet.visualizer.infoVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.infoVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.infoVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.infoVisualizer[0] networkNodeVisualizerModule "\"VitalGuardNet.visualizer.networkNodeVisualizer[0]\""
+par VitalGuardNet.visualizer.infoVisualizer[0] displayInfos true
+par VitalGuardNet.visualizer.infoVisualizer[0] modules "\"\""
+attr mutable ""
+par VitalGuardNet.visualizer.infoVisualizer[0] format "\"%t\""
+attr mutable ""
+par VitalGuardNet.visualizer.infoVisualizer[0] font "\"<default>\""
+par VitalGuardNet.visualizer.infoVisualizer[0] textColor "\"black\""
+par VitalGuardNet.visualizer.infoVisualizer[0] backgroundColor "\"white\""
+par VitalGuardNet.visualizer.infoVisualizer[0] opacity 1
+par VitalGuardNet.visualizer.infoVisualizer[0] placementHint "\"top\""
+par VitalGuardNet.visualizer.infoVisualizer[0] placementPriority 0
+par VitalGuardNet.visualizer.infoVisualizer[0] zIndex 10
+par VitalGuardNet.visualizer.energyStorageVisualizer[0] typename "\"inet.visualizer.canvas.power.EnergyStorageCanvasVisualizer\""
+par VitalGuardNet.visualizer.energyStorageVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.energyStorageVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.energyStorageVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.energyStorageVisualizer[0] networkNodeVisualizerModule "\"VitalGuardNet.visualizer.networkNodeVisualizer[0]\""
+par VitalGuardNet.visualizer.energyStorageVisualizer[0] displayEnergyStorages false
+par VitalGuardNet.visualizer.energyStorageVisualizer[0] energyStorageFilter "\"**\""
+par VitalGuardNet.visualizer.energyStorageVisualizer[0] color "\"green\""
+par VitalGuardNet.visualizer.energyStorageVisualizer[0] width 8
+par VitalGuardNet.visualizer.energyStorageVisualizer[0] height 24
+par VitalGuardNet.visualizer.energyStorageVisualizer[0] spacing 2
+par VitalGuardNet.visualizer.energyStorageVisualizer[0] placementHint "\"right\""
+par VitalGuardNet.visualizer.energyStorageVisualizer[0] placementPriority 0
+par VitalGuardNet.visualizer.energyStorageVisualizer[0] zIndex 10
+par VitalGuardNet.visualizer.mediumVisualizer[0] typename "\"inet.visualizer.canvas.physicallayer.MediumCanvasVisualizer\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] mediumModule "\"radioMedium\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] networkNodeVisualizerModule "\"VitalGuardNet.visualizer.networkNodeVisualizer[0]\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] nodeFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.mediumVisualizer[0] interfaceFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.mediumVisualizer[0] packetFilter "(omnetpp::cValueHolder)holder: \"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.mediumVisualizer[0] displaySignals false
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalColor "\"dark\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalPropagationAnimationSpeed "nan "
+attr mutable ""
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalPropagationAnimationTime 1s
+attr unit s
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalPropagationAdditionalTime 0s
+attr unit s
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalTransmissionAnimationSpeed "nan "
+attr mutable ""
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalTransmissionAnimationTime 1s
+attr unit s
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalAnimationSpeedChangeTimeMode "\"realTime\""
+attr enum realTime,animationTime,simulationTime
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalAnimationSpeedChangeTime 1s
+attr unit s
+par VitalGuardNet.visualizer.mediumVisualizer[0] displaySignalDepartures false
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalDepartureImage "\"misc/signal_departure.png\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalDeparturePlacementHint "\"topCenter\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalDeparturePlacementPriority 1
+par VitalGuardNet.visualizer.mediumVisualizer[0] displaySignalArrivals false
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalArrivalImage "\"misc/signal_arrival.png\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalArrivalPlacementHint "\"topCenter\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalArrivalPlacementPriority -1
+par VitalGuardNet.visualizer.mediumVisualizer[0] displayCommunicationRanges false
+par VitalGuardNet.visualizer.mediumVisualizer[0] communicationRangeLineColor "\"blue\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] communicationRangeLineStyle "\"solid\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] communicationRangeLineWidth 1
+par VitalGuardNet.visualizer.mediumVisualizer[0] displayInterferenceRanges false
+par VitalGuardNet.visualizer.mediumVisualizer[0] interferenceRangeLineColor "\"gray\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] interferenceRangeLineStyle "\"solid\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] interferenceRangeLineWidth 1
+par VitalGuardNet.visualizer.mediumVisualizer[0] autoPowerAxis true
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalMinPower "inf dBmW"
+attr unit dBmW
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalMaxPower 0dBmW
+attr unit dBmW
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalMinPowerDensity "inf dBmWpMHz"
+attr unit dBmWpMHz
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalMaxPowerDensity "-inf dBmWpMHz"
+attr unit dBmWpMHz
+par VitalGuardNet.visualizer.mediumVisualizer[0] autoTimeAxis true
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalMinTime 0s
+attr unit s
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalMaxTime 0s
+attr unit s
+par VitalGuardNet.visualizer.mediumVisualizer[0] autoFrequencyAxis true
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalMinFrequency "inf Hz"
+attr unit Hz
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalMaxFrequency "-inf Hz"
+attr unit Hz
+par VitalGuardNet.visualizer.mediumVisualizer[0] displayMainPowerDensityMap false
+par VitalGuardNet.visualizer.mediumVisualizer[0] mainPowerDensityMapPixmapDensity 1
+par VitalGuardNet.visualizer.mediumVisualizer[0] mainPowerDensityMapMinX 0
+par VitalGuardNet.visualizer.mediumVisualizer[0] mainPowerDensityMapMaxX "nan "
+par VitalGuardNet.visualizer.mediumVisualizer[0] mainPowerDensityMapMinY 0
+par VitalGuardNet.visualizer.mediumVisualizer[0] mainPowerDensityMapMaxY "nan "
+par VitalGuardNet.visualizer.mediumVisualizer[0] mainPowerDensityMapZ 0
+par VitalGuardNet.visualizer.mediumVisualizer[0] mainPowerDensityMapFigureXTickCount 3
+par VitalGuardNet.visualizer.mediumVisualizer[0] mainPowerDensityMapFigureYTickCount 3
+par VitalGuardNet.visualizer.mediumVisualizer[0] displayPowerDensityMaps false
+par VitalGuardNet.visualizer.mediumVisualizer[0] powerDensityMapMode "\"auto\""
+attr enum total,signal,auto
+par VitalGuardNet.visualizer.mediumVisualizer[0] powerDensityMapPixelMode "\"mean\""
+attr enum sample,partition,mean
+par VitalGuardNet.visualizer.mediumVisualizer[0] powerDensityMapApproximationSize 10
+par VitalGuardNet.visualizer.mediumVisualizer[0] powerDensityMapCenterFrequency "nan Hz"
+attr mutable ""
+attr unit Hz
+par VitalGuardNet.visualizer.mediumVisualizer[0] powerDensityMapBandwidth 0Hz
+attr mutable ""
+attr unit Hz
+par VitalGuardNet.visualizer.mediumVisualizer[0] powerDensityMapFigureWidth 200
+par VitalGuardNet.visualizer.mediumVisualizer[0] powerDensityMapFigureHeight 120
+par VitalGuardNet.visualizer.mediumVisualizer[0] powerDensityMapPixmapWidth 200
+par VitalGuardNet.visualizer.mediumVisualizer[0] powerDensityMapPixmapHeight 120
+par VitalGuardNet.visualizer.mediumVisualizer[0] powerDensityMapZ 0
+par VitalGuardNet.visualizer.mediumVisualizer[0] powerDensityMapFigureXTickCount 3
+par VitalGuardNet.visualizer.mediumVisualizer[0] powerDensityMapFigureYTickCount 3
+par VitalGuardNet.visualizer.mediumVisualizer[0] displaySpectrums false
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrumMode "\"auto\""
+attr enum total,signal,auto
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrumFigureWidth 200
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrumFigureHeight 120
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrumFigureXTickCount 3
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrumFigureYTickCount 5
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrumFigureInterpolationSize 5
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrumPlacementHint "\"bottomCenter\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrumPlacementPriority -1
+par VitalGuardNet.visualizer.mediumVisualizer[0] displaySpectrograms false
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrogramMode "\"auto\""
+attr enum total,signal,auto
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrogramPixelMode "\"mean\""
+attr enum sample,partition,mean
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrogramFigureWidth 200
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrogramFigureHeight 120
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrogramPixmapWidth 200
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrogramPixmapHeight 120
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrogramFigureXTickCount 3
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrogramFigureYTickCount 5
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrogramPlacementHint "\"bottomCenter\""
+par VitalGuardNet.visualizer.mediumVisualizer[0] spectrogramPlacementPriority -1
+par VitalGuardNet.visualizer.mediumVisualizer[0] zIndex 0
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalShape "\"ring\""
+attr enum ring,sphere
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalOpacity 0.5
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalRingCount 20
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalRingSize 50m
+attr unit m
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalFadingDistance 50m
+attr unit m
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalFadingFactor 1.2
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalWaveCount 20
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalWaveLength 50m
+attr unit m
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalWaveWidth 10m
+attr unit m
+par VitalGuardNet.visualizer.mediumVisualizer[0] signalWaveFadingAnimationSpeedFactor 1
+par VitalGuardNet.visualizer.mediumVisualizer[0] displayCommunicationHeat false
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] typename "\"inet.visualizer.canvas.physicallayer.TracingObstacleLossCanvasVisualizer\""
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] displayIntersections false
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] intersectionLineColor "\"red\""
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] intersectionLineStyle "\"solid\""
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] intersectionLineWidth 1
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] displayFaceNormalVectors false
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] faceNormalLineColor "\"grey\""
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] faceNormalLineStyle "\"solid\""
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] faceNormalLineWidth 1
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] fadeOutMode "\"realTime\""
+attr enum realTime,animationTime,simulationTime
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] fadeOutTime 1s
+attr unit s
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] fadeOutAnimationSpeed 0
+par VitalGuardNet.visualizer.obstacleLossVisualizer[0] zIndex 0
+par VitalGuardNet.visualizer.packetDropVisualizer[0] typename "\"inet.visualizer.canvas.common.PacketDropCanvasVisualizer\""
+par VitalGuardNet.visualizer.packetDropVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.packetDropVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.packetDropVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.packetDropVisualizer[0] displayPacketDrops false
+par VitalGuardNet.visualizer.packetDropVisualizer[0] nodeFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.packetDropVisualizer[0] interfaceFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.packetDropVisualizer[0] packetFilter "(omnetpp::cValueHolder)holder: \"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.packetDropVisualizer[0] detailsFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.packetDropVisualizer[0] icon "\"msg/packet_s\""
+par VitalGuardNet.visualizer.packetDropVisualizer[0] iconTintAmount 1
+par VitalGuardNet.visualizer.packetDropVisualizer[0] iconTintColor "\"dark\""
+par VitalGuardNet.visualizer.packetDropVisualizer[0] labelFormat "\"%n\""
+attr mutable ""
+par VitalGuardNet.visualizer.packetDropVisualizer[0] labelFont "\"<default>\""
+par VitalGuardNet.visualizer.packetDropVisualizer[0] labelColor "\"black\""
+par VitalGuardNet.visualizer.packetDropVisualizer[0] fadeOutMode "\"realTime\""
+attr enum realTime,animationTime,simulationTime
+par VitalGuardNet.visualizer.packetDropVisualizer[0] fadeOutTime 1s
+attr unit s
+par VitalGuardNet.visualizer.packetDropVisualizer[0] fadeOutAnimationSpeed 0
+par VitalGuardNet.visualizer.packetDropVisualizer[0] zIndex 10
+par VitalGuardNet.visualizer.packetDropVisualizer[0] dx 32
+par VitalGuardNet.visualizer.packetDropVisualizer[0] dy 64
+par VitalGuardNet.visualizer.queueVisualizer[0] typename "\"inet.visualizer.canvas.common.QueueCanvasVisualizer\""
+par VitalGuardNet.visualizer.queueVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.queueVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.queueVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.queueVisualizer[0] networkNodeVisualizerModule "\"VitalGuardNet.visualizer.networkNodeVisualizer[0]\""
+par VitalGuardNet.visualizer.queueVisualizer[0] displayQueues false
+par VitalGuardNet.visualizer.queueVisualizer[0] queueFilter "\"**\""
+par VitalGuardNet.visualizer.queueVisualizer[0] color "\"blue\""
+par VitalGuardNet.visualizer.queueVisualizer[0] width 8
+par VitalGuardNet.visualizer.queueVisualizer[0] height 24
+par VitalGuardNet.visualizer.queueVisualizer[0] spacing 2
+par VitalGuardNet.visualizer.queueVisualizer[0] placementHint "\"right\""
+par VitalGuardNet.visualizer.queueVisualizer[0] placementPriority 0
+par VitalGuardNet.visualizer.queueVisualizer[0] zIndex 10
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] typename "\"inet.visualizer.canvas.common.GateScheduleCanvasVisualizer\""
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] networkNodeVisualizerModule "\"VitalGuardNet.visualizer.networkNodeVisualizer[0]\""
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] displayGateSchedules false
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] labelFormat "\"%i %D\""
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] gateFilter "\"**\""
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] width 100
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] height 8
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] spacing 2
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] placementHint "\"right\""
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] placementPriority 0
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] displayDuration 0s
+attr mutable ""
+attr unit s
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] currentTimePosition 50
+par VitalGuardNet.visualizer.gateScheduleVisualizer[0] zIndex 10
+par VitalGuardNet.visualizer.radioVisualizer[0] typename "\"inet.visualizer.canvas.physicallayer.RadioCanvasVisualizer\""
+par VitalGuardNet.visualizer.radioVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.radioVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.radioVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.radioVisualizer[0] networkNodeVisualizerModule "\"VitalGuardNet.visualizer.networkNodeVisualizer[0]\""
+par VitalGuardNet.visualizer.radioVisualizer[0] displayRadios false
+par VitalGuardNet.visualizer.radioVisualizer[0] displayRadioMode true
+par VitalGuardNet.visualizer.radioVisualizer[0] displayReceptionState true
+par VitalGuardNet.visualizer.radioVisualizer[0] displayTransmissionState true
+par VitalGuardNet.visualizer.radioVisualizer[0] displayAntennaLobes false
+par VitalGuardNet.visualizer.radioVisualizer[0] radioFilter "\"**\""
+attr mutable ""
+par VitalGuardNet.visualizer.radioVisualizer[0] radioModeImages "\"block/process_vs block/timer_vs block/wrx_vs block/wtx_vs block/wrxtx_vs block/cogwheel_vs\""
+par VitalGuardNet.visualizer.radioVisualizer[0] receptionStateImages "\"- - misc/receiving misc/receiving\""
+par VitalGuardNet.visualizer.radioVisualizer[0] transmissionStateImages "\"- - misc/transmitting\""
+par VitalGuardNet.visualizer.radioVisualizer[0] width 16
+par VitalGuardNet.visualizer.radioVisualizer[0] height 16
+par VitalGuardNet.visualizer.radioVisualizer[0] placementHint "\"bottomRight\""
+par VitalGuardNet.visualizer.radioVisualizer[0] placementPriority 0
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobeNormalize false
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobeRelativeLabels false
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobePlaneGlobal true
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobePlane "\"view\""
+attr enum view,xy,xz,yz
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobeMode "\"logarithmic\""
+attr enum logarithmic,linear
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobeLogarithmicBase 10
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobeLogarithmicScale 100
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobeRadius 100
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobeStep 10deg
+attr unit deg
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobeOpacity 0.25
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobeLineSmooth true
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobeLineColor "\"black\""
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobeLineStyle "\"solid\""
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobeLineWidth 1
+par VitalGuardNet.visualizer.radioVisualizer[0] antennaLobeFillColor "\"white\""
+par VitalGuardNet.visualizer.radioVisualizer[0] zIndex 10
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] typename "\"inet.visualizer.canvas.physicallayer.PhysicalLinkCanvasVisualizer\""
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] displayLinks false
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] activityLevel "\"service\""
+attr enum service,peer,protocol
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] nodeFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] interfaceFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] packetFilter "(omnetpp::cValueHolder)holder: \"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] lineColor "\"olive\""
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] lineStyle "\"dotted\""
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] lineWidth 3
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] lineShift 16
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] lineShiftMode "\"normal\""
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] lineContactSpacing 3
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] lineContactMode "\"rectangular\""
+attr enum circular,rectangular
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] labelFormat "\"%n\""
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] labelFont "\"<default>, 8px\""
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] labelColor "\"olive\""
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] fadeOutMode "\"realTime\""
+attr enum realTime,animationTime,simulationTime
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] fadeOutTime 1s
+attr unit s
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] fadeOutAnimationSpeed 0
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] holdAnimationTime 0s
+attr unit s
+par VitalGuardNet.visualizer.physicalLinkVisualizer[0] zIndex 1
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] typename "\"inet.visualizer.canvas.linklayer.InterfaceTableCanvasVisualizer\""
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] networkNodeVisualizerModule "\"VitalGuardNet.visualizer.networkNodeVisualizer[0]\""
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] displayInterfaceTables false
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] displayWiredInterfacesAtConnections true
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] displayBackground false
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] nodeFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] interfaceFilter "\"not(lo*)\""
+attr mutable ""
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] format "\"%N %\\\\%a%/%l\""
+attr mutable ""
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] placementHint "\"top\""
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] placementPriority 0
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] font "\"<default>\""
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] textColor "\"#005030\""
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] backgroundColor "\"white\""
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] opacity 1
+par VitalGuardNet.visualizer.interfaceTableVisualizer[0] zIndex 10
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] typename "\"inet.visualizer.canvas.linklayer.DataLinkCanvasVisualizer\""
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] displayLinks false
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] activityLevel "\"service\""
+attr enum service,peer,protocol
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] nodeFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] interfaceFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] packetFilter "(omnetpp::cValueHolder)holder: \"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] lineColor "\"darkcyan\""
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] lineStyle "\"solid\""
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] lineWidth 3
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] lineShift 16
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] lineShiftMode "\"normal\""
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] lineContactSpacing 3
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] lineContactMode "\"rectangular\""
+attr enum circular,rectangular
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] labelFormat "\"%n\""
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] labelFont "\"<default>, 8px\""
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] labelColor "\"darkcyan\""
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] fadeOutMode "\"realTime\""
+attr enum realTime,animationTime,simulationTime
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] fadeOutTime 1s
+attr unit s
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] fadeOutAnimationSpeed 0
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] holdAnimationTime 0s
+attr unit s
+par VitalGuardNet.visualizer.dataLinkVisualizer[0] zIndex 2
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] typename "\"inet.visualizer.canvas.linklayer.LinkBreakCanvasVisualizer\""
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] displayLinkBreaks false
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] nodeFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] interfaceFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] packetFilter "(omnetpp::cValueHolder)holder: \"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] icon "\"status/stop\""
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] iconTintAmount 0
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] iconTintColor "\"\""
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] fadeOutMode "\"realTime\""
+attr enum realTime,animationTime,simulationTime
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] fadeOutTime 1s
+attr unit s
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] fadeOutAnimationSpeed 0
+par VitalGuardNet.visualizer.linkBreakVisualizer[0] zIndex 2
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] typename "\"inet.visualizer.canvas.linklayer.Ieee80211CanvasVisualizer\""
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] networkNodeVisualizerModule "\"VitalGuardNet.visualizer.networkNodeVisualizer[0]\""
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] displayAssociations false
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] nodeFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] interfaceFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] minPower -85dBm
+attr unit dBm
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] maxPower -50dBm
+attr unit dBm
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] icons "\"misc/signal_power_0 misc/signal_power_1 misc/signal_power_2 misc/signal_power_3\""
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] iconColor "\"dark\""
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] labelFont "\"<default>\""
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] labelColor "\"black\""
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] placementHint "\"top\""
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] placementPriority 0
+par VitalGuardNet.visualizer.ieee80211Visualizer[0] zIndex 2
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] typename "\"inet.visualizer.canvas.networklayer.NetworkRouteCanvasVisualizer\""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] displayRoutes false
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] startPathSignal "\"packetReceivedFromUpper\""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] extendPathSignal "\"packetReceivedFromLower\""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] endPathSignal "\"packetSentToUpper\""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] nodeFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] packetFilter "(omnetpp::cValueHolder)holder: \"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] lineColor "\"dark\""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] lineStyle "\"solid\""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] lineWidth 3
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] lineSmooth false
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] lineShift 16
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] lineShiftMode "\"normal\""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] lineContactSpacing 3
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] lineContactMode "\"rectangular\""
+attr enum circular,rectangular
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] labelFormat "\"%n\""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] labelFont "\"<default>, 8px\""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] labelColor "\"\""
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] fadeOutMode "\"realTime\""
+attr enum realTime,animationTime,simulationTime
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] fadeOutTime 1s
+attr unit s
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] fadeOutAnimationSpeed 0
+par VitalGuardNet.visualizer.networkRouteVisualizer[0] zIndex 3
+par VitalGuardNet.visualizer.routingTableVisualizer[0] typename "\"inet.visualizer.canvas.networklayer.RoutingTableCanvasVisualizer\""
+par VitalGuardNet.visualizer.routingTableVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.routingTableVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.routingTableVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.routingTableVisualizer[0] displayRoutingTables false
+par VitalGuardNet.visualizer.routingTableVisualizer[0] displayRoutesIndividually true
+par VitalGuardNet.visualizer.routingTableVisualizer[0] displayLabels true
+par VitalGuardNet.visualizer.routingTableVisualizer[0] destinationFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.routingTableVisualizer[0] nodeFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.routingTableVisualizer[0] lineColor "\"black\""
+par VitalGuardNet.visualizer.routingTableVisualizer[0] lineStyle "\"solid\""
+par VitalGuardNet.visualizer.routingTableVisualizer[0] lineWidth 2
+par VitalGuardNet.visualizer.routingTableVisualizer[0] lineShift 16
+par VitalGuardNet.visualizer.routingTableVisualizer[0] lineShiftMode "\"normal\""
+par VitalGuardNet.visualizer.routingTableVisualizer[0] lineContactSpacing 3
+par VitalGuardNet.visualizer.routingTableVisualizer[0] lineContactMode "\"rectangular\""
+attr enum circular,rectangular
+par VitalGuardNet.visualizer.routingTableVisualizer[0] labelFormat "\"%d/%m -> %g (%n)\""
+attr mutable ""
+par VitalGuardNet.visualizer.routingTableVisualizer[0] labelFont "\"<default>, 8px\""
+par VitalGuardNet.visualizer.routingTableVisualizer[0] labelColor "\"black\""
+par VitalGuardNet.visualizer.routingTableVisualizer[0] zIndex 0
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] typename "\"inet.visualizer.canvas.transportlayer.TransportRouteCanvasVisualizer\""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] displayRoutes false
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] startPathSignal "\"packetReceivedFromUpper\""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] extendPathSignal "\"packetReceivedFromLower\""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] endPathSignal "\"packetSentToUpper\""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] nodeFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] packetFilter "(omnetpp::cValueHolder)holder: \"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] lineColor "\"dark\""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] lineStyle "\"solid\""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] lineWidth 3
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] lineSmooth false
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] lineShift 16
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] lineShiftMode "\"normal\""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] lineContactSpacing 3
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] lineContactMode "\"rectangular\""
+attr enum circular,rectangular
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] labelFormat "\"%n\""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] labelFont "\"<default>, 8px\""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] labelColor "\"\""
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] fadeOutMode "\"realTime\""
+attr enum realTime,animationTime,simulationTime
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] fadeOutTime 1s
+attr unit s
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] fadeOutAnimationSpeed 0
+par VitalGuardNet.visualizer.transportRouteVisualizer[0] zIndex 4
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] typename "\"inet.visualizer.canvas.transportlayer.TransportConnectionCanvasVisualizer\""
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] networkNodeVisualizerModule "\"VitalGuardNet.visualizer.networkNodeVisualizer[0]\""
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] displayTransportConnections false
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] sourceNodeFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] sourcePortFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] destinationNodeFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] destinationPortFilter "\"*\""
+attr mutable ""
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] icon "\"misc/marker_s\""
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] iconColor "\"dark\""
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] labelFont "\"<default>\""
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] labelColor "\"black\""
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] placementHint "\"top\""
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] placementPriority 0
+par VitalGuardNet.visualizer.transportConnectionVisualizer[0] zIndex 4
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] typename "\"inet.visualizer.canvas.configurator.FailureProtectionConfigurationCanvasVisualizer\""
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] displayTrees false
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] lineColor "\"dark\""
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] lineStyle "\"solid\""
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] lineWidth 3
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] lineSmooth false
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] lineShift 16
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] lineShiftMode "\"normal\""
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] lineContactSpacing 3
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] lineContactMode "\"rectangular\""
+attr enum circular,rectangular
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] failureProtectionConfiguratorModule "\"failureProtectionConfigurator\""
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] streamFilter "\"*\""
+par VitalGuardNet.visualizer.failureProtectionConfigurationVisualizer[0] zIndex 3
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] typename "\"inet.visualizer.canvas.configurator.StreamRedundancyConfigurationCanvasVisualizer\""
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] visualizationTargetModule "\"^.^\""
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] visualizationSubjectModule "\"^.^\""
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] tags "\"\""
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] displayTrees false
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] lineColor "\"dark\""
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] lineStyle "\"solid\""
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] lineWidth 3
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] lineSmooth false
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] lineShift 16
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] lineShiftMode "\"normal\""
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] lineContactSpacing 3
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] lineContactMode "\"rectangular\""
+attr enum circular,rectangular
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] streamRedundancyConfiguratorModule "\"streamRedundancyConfigurator\""
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] streamFilter "\"*\""
+par VitalGuardNet.visualizer.streamRedundancyConfigurationVisualizer[0] zIndex 3
+par VitalGuardNet.visualizer typename "\"inet.visualizer.canvas.integrated.IntegratedMultiCanvasVisualizer\""
+par VitalGuardNet.visualizer numSceneVisualizers 1
+par VitalGuardNet.visualizer numPhysicalEnvironmentVisualizers 1
+par VitalGuardNet.visualizer numNetworkNodeVisualizers 1
+par VitalGuardNet.visualizer numNetworkConnectionVisualizers 1
+par VitalGuardNet.visualizer numMobilityVisualizers 1
+par VitalGuardNet.visualizer numStatisticVisualizers 1
+par VitalGuardNet.visualizer numInfoVisualizers 1
+par VitalGuardNet.visualizer numEnergyStorageVisualizers 1
+par VitalGuardNet.visualizer numMediumVisualizers 1
+par VitalGuardNet.visualizer numObstacleLossVisualizers 1
+par VitalGuardNet.visualizer numPacketDropVisualizers 1
+par VitalGuardNet.visualizer numQueueVisualizers 1
+par VitalGuardNet.visualizer numGateScheduleVisualizers 1
+par VitalGuardNet.visualizer numRadioVisualizers 1
+par VitalGuardNet.visualizer numPhysicalLinkVisualizers 1
+par VitalGuardNet.visualizer numInterfaceTableVisualizers 1
+par VitalGuardNet.visualizer numDataLinkVisualizers 1
+par VitalGuardNet.visualizer numLinkBreakVisualizers 1
+par VitalGuardNet.visualizer numIeee80211Visualizers 1
+par VitalGuardNet.visualizer numNetworkRouteVisualizers 1
+par VitalGuardNet.visualizer numRoutingTableVisualizers 1
+par VitalGuardNet.visualizer numTransportRouteVisualizers 1
+par VitalGuardNet.visualizer numTransportConnectionVisualizers 1
+par VitalGuardNet.visualizer numFailureProtectionConfigurationVisualizers 1
+par VitalGuardNet.visualizer numStreamRedundancyConfigurationVisualizers 1
+par VitalGuardNet typename "\"VitalGuardNet\""
+
