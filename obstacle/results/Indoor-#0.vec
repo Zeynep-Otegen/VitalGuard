@@ -1,0 +1,2216 @@
+version 3
+run Indoor-0-20260426-22:31:17-10664
+attr configname Indoor
+attr datetime 20260426-22:31:17
+attr datetimef 20260426-223117
+attr experiment Indoor
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network HospitalNet
+attr processid 10664
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config image-path ../../inet4.5/images
+config description "Wireless nodes send pings inside a house"
+config *.numMonitors 1
+config *.numHosts 2
+config *.visualizer.canvasVisualizer.physicalEnvironmentVisualizer.displayObjects true
+config *.visualizer.*Visualizer.sceneVisualizer.axisLength 50m
+config *.visualizer.osgVisualizer.sceneVisualizer.displayScene true
+config *.visualizer.osgVisualizer.sceneVisualizer.sceneImage "\"background/checkered.png\""
+config *.visualizer.osgVisualizer.sceneVisualizer.sceneImageSize 8m
+config *.visualizer.canvasVisualizer.sceneVisualizer.viewTranslation "\"5000 5000\""
+config *.visualizer.*Visualizer.mediumVisualizer.signalPropagationAnimationSpeed 0.000001
+config *.visualizer.*Visualizer.mediumVisualizer.signalTransmissionAnimationSpeed 0.0005
+config *.physicalEnvironment.config "xmldoc(\"indoor.xml\")"
+config *.host[*].app[0].startTime 0s
+config *.host[*].wlan[*].radio.transmitter.power 0.004mW
+config *.host[*].wlan[*].radio.receiver.sensitivity -90dBm
+config *.monitor[*].mobility.initFromDisplayString false
+config *.monitor[*].mobility.constraintAreaMinX 0m
+config *.monitor[*].mobility.constraintAreaMinY 0m
+config *.monitor[*].mobility.constraintAreaMinZ 0m
+config *.monitor[*].mobility.constraintAreaMaxX 40m
+config *.monitor[*].mobility.constraintAreaMaxY 20m
+config *.monitor[*].mobility.constraintAreaMaxZ 1m
+config *.monitor[0].mobility.typename StationaryMobility
+config *.monitor[0].mobility.initialX 30m
+config *.monitor[0].mobility.initialY 19m
+config *.monitor[*].mobility.initialZ 0m
+config *.monitor[0].numApps 1
+config *.monitor[0].app[0].typename UdpBasicApp
+config *.monitor[0].app[0].destAddresses "\"10.0.0.2 10.0.0.3\""
+config *.monitor[0].app[0].destPort 1000
+config *.monitor[0].app[0].sendInterval 10s
+config *.monitor[0].app[0].startTime 15s
+config *.monitor[0].app[0].messageLength 40B
+config *.host[*].numApps 1
+config *.host[*].app[0].typename UdpSink
+config *.host[*].app[0].localPort 1000
+config *.host[1].mobility.typename TurtleMobility
+config *.host[1].mobility.updateInterval 100ms
+config *.host[1].mobility.turtleScript "xmldoc(\"turtle.xml\")"
+config *.host[0].mobility.typename TurtleMobility
+config *.host[0].mobility.updateInterval 100ms
+config *.host[0].mobility.turtleScript "xmldoc(\"turtle2.xml\")"
+config network HospitalNet
+config *.configurator.addStaticArpEntries true
+config *.configurator.optimizeRoutes false
+config *.configurator.assignAddresses true
+config **.vector-recording true
+config **.scalar-recording true
+config **.bin-recording true
+config **.app[*].rcvdPkFromHL:vector.vector-recording true
+config **.app[*].sentPk:vector.vector-recording true
+config num-rngs 3
+config *.host[*].mobility.rng-0 1
+config *.host[*].wlan[*].mac.rng-0 2
+config *.visualizer.*.mediumVisualizer.displaySignals false
+config *.visualizer.*.mediumVisualizer.displaySignalDepartures false
+config *.visualizer.*.mediumVisualizer.displaySignalArrivals false
+config *.visualizer.canvasVisualizer.dataLinkVisualizer.displayLinks true
+config *.visualizer.canvasVisualizer.dataLinkVisualizer.packetNameFilter "\"UdpBasicAppMsg\""
+config *.visualizer.canvasVisualizer.dataLinkVisualizer.nodeFilter "\"host* or monitor*\""
+config *.physicalEnvironment.spaceMinX 0m
+config *.physicalEnvironment.spaceMinY 0m
+config *.physicalEnvironment.spaceMinZ -1000m
+config *.physicalEnvironment.spaceMaxX 1000m
+config *.physicalEnvironment.spaceMaxY 1000m
+config *.physicalEnvironment.spaceMaxZ 1000m
+config *.radioMedium.obstacleLoss.typename DielectricObstacleLoss
+config *.radioMedium.typename RadioMedium
+config *.radioMedium.backgroundNoise.power -110dBm
+config **.wlan[0].radio.displayInterferenceRange false
+config **.wlan[0].radio.displayCommunicationRange true
+config **.wlan[0].typename Ieee802154NarrowbandInterface
+config **.wlan[0].mac.typename Ieee802154Mac
+config **.wlan[0].radio.typename Ieee802154NarrowbandScalarRadio
+
+vector 0 HospitalNet.host[0].lo[0].lo rcvdPkFromHl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromUpper
+attr title "packets received from higher layer, packetBytes"
+vector 1 HospitalNet.host[0].lo[0].lo passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 2 HospitalNet.host[0].lo[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 3 HospitalNet.host[0].lo[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 4 HospitalNet.host[0].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 5 HospitalNet.host[0].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 6 HospitalNet.host[0].wlan[0].queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 7 HospitalNet.host[0].wlan[0].queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 8 HospitalNet.host[0].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 9 HospitalNet.host[0].wlan[0].queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 10 HospitalNet.host[0].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 11 HospitalNet.host[0].wlan[0].queue droppedPacketLengthsQueueOverflow:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropReasonIsQueueOverflow(packetDropped))
+attr title "dropped packet lengths: queue overflow"
+attr unit b
+vector 12 HospitalNet.host[0].wlan[0].queue flowQueueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(demuxFlow(packetPulled))
+attr title "flow queueing times"
+attr unit s
+vector 13 HospitalNet.host[0].wlan[0].queue flowIncomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPushStarted)))
+attr title "flow specific incoming data rate"
+attr unit bps
+vector 14 HospitalNet.host[0].wlan[0].queue flowOutgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPulled)))
+attr title "flow specific outgoing data rate"
+attr unit bps
+vector 15 HospitalNet.host[0].wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 16 HospitalNet.host[0].wlan[0].mac packetDropIncorrectlyReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packet drop: incorrectly received, packetBytes"
+vector 17 HospitalNet.host[0].wlan[0].mac packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drop: queue overflow, packetBytes"
+vector 18 HospitalNet.host[0].wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drop: retry limit reached, packetBytes"
+vector 19 HospitalNet.host[0].wlan[0].mac packetDropBackoffLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsCongestion(packetDropped)
+attr title "packet drop: backoff limit reached, packetBytes"
+vector 20 HospitalNet.host[0].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 21 HospitalNet.host[0].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 22 HospitalNet.host[0].wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 23 HospitalNet.host[0].wlan[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 24 HospitalNet.host[0].wlan[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 25 HospitalNet.host[0].ipv4.ip packetDropAddressResolutionFailed:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsAddressResolutionFailed(packetDropped)
+attr title "packet drop: address resolution failed, packetBytes"
+vector 26 HospitalNet.host[0].ipv4.ip packetDropHopLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsHopLimitReached(packetDropped)
+attr title "packet drop: hop limit reached, packetBytes"
+vector 27 HospitalNet.host[0].ipv4.ip packetDropForwardingDisabled:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsForwardingDisabled(packetDropped)
+attr title "packet drop: forwarding disabled, packetBytes"
+vector 28 HospitalNet.host[0].ipv4.ip packetDropNoInterfaceFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoInterfaceFound(packetDropped)
+attr title "packet drop: no interface found, packetBytes"
+vector 29 HospitalNet.host[0].ipv4.ip packetDropNoRouteFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoRouteFound(packetDropped)
+attr title "packet drop: no route found, packetBytes"
+vector 30 HospitalNet.host[0].ipv4.ip packetDropUndefined:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsUndefined(packetDropped)
+attr title "packet drop: undefined, packetBytes"
+vector 31 HospitalNet.host[0].ipv4.arp arpRequestSent:vector(packetBytes) ETV
+attr recordingmode vector(packetBytes)
+attr source arpRequestSent
+attr title "ARP request sent, packetBytes"
+vector 32 HospitalNet.host[0].ipv4.arp arpReplySent:vector(packetBytes) ETV
+attr recordingmode vector(packetBytes)
+attr source arpReplySent
+attr title "ARP replies sent, packetBytes"
+vector 33 HospitalNet.host[0].udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 34 HospitalNet.host[0].udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 35 HospitalNet.host[0].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 36 HospitalNet.host[0].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 37 HospitalNet.host[0].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 38 HospitalNet.host[0].app[0] packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 39 HospitalNet.host[0].app[0] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+vector 40 HospitalNet.host[0].app[0] endToEndDelay:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source dataAge(packetReceived)
+attr title "end-to-end delay"
+attr unit s
+vector 41 HospitalNet.host[0].app[0] rcvdPkSeqNo:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source appPkSeqNo(packetReceived)
+attr title "received packet sequence number"
+vector 42 HospitalNet.host[1].lo[0].lo rcvdPkFromHl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromUpper
+attr title "packets received from higher layer, packetBytes"
+vector 43 HospitalNet.host[1].lo[0].lo passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 44 HospitalNet.host[1].lo[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 45 HospitalNet.host[1].lo[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 46 HospitalNet.host[1].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 47 HospitalNet.host[1].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 48 HospitalNet.host[1].wlan[0].queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 49 HospitalNet.host[1].wlan[0].queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 50 HospitalNet.host[1].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 51 HospitalNet.host[1].wlan[0].queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 52 HospitalNet.host[1].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 53 HospitalNet.host[1].wlan[0].queue droppedPacketLengthsQueueOverflow:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropReasonIsQueueOverflow(packetDropped))
+attr title "dropped packet lengths: queue overflow"
+attr unit b
+vector 54 HospitalNet.host[1].wlan[0].queue flowQueueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(demuxFlow(packetPulled))
+attr title "flow queueing times"
+attr unit s
+vector 55 HospitalNet.host[1].wlan[0].queue flowIncomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPushStarted)))
+attr title "flow specific incoming data rate"
+attr unit bps
+vector 56 HospitalNet.host[1].wlan[0].queue flowOutgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPulled)))
+attr title "flow specific outgoing data rate"
+attr unit bps
+vector 57 HospitalNet.host[1].wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 58 HospitalNet.host[1].wlan[0].mac packetDropIncorrectlyReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packet drop: incorrectly received, packetBytes"
+vector 59 HospitalNet.host[1].wlan[0].mac packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drop: queue overflow, packetBytes"
+vector 60 HospitalNet.host[1].wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drop: retry limit reached, packetBytes"
+vector 61 HospitalNet.host[1].wlan[0].mac packetDropBackoffLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsCongestion(packetDropped)
+attr title "packet drop: backoff limit reached, packetBytes"
+vector 62 HospitalNet.host[1].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 63 HospitalNet.host[1].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 64 HospitalNet.host[1].wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 65 HospitalNet.host[1].wlan[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 66 HospitalNet.host[1].wlan[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 67 HospitalNet.host[1].ipv4.ip packetDropAddressResolutionFailed:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsAddressResolutionFailed(packetDropped)
+attr title "packet drop: address resolution failed, packetBytes"
+vector 68 HospitalNet.host[1].ipv4.ip packetDropHopLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsHopLimitReached(packetDropped)
+attr title "packet drop: hop limit reached, packetBytes"
+vector 69 HospitalNet.host[1].ipv4.ip packetDropForwardingDisabled:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsForwardingDisabled(packetDropped)
+attr title "packet drop: forwarding disabled, packetBytes"
+vector 70 HospitalNet.host[1].ipv4.ip packetDropNoInterfaceFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoInterfaceFound(packetDropped)
+attr title "packet drop: no interface found, packetBytes"
+vector 71 HospitalNet.host[1].ipv4.ip packetDropNoRouteFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoRouteFound(packetDropped)
+attr title "packet drop: no route found, packetBytes"
+vector 72 HospitalNet.host[1].ipv4.ip packetDropUndefined:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsUndefined(packetDropped)
+attr title "packet drop: undefined, packetBytes"
+vector 73 HospitalNet.host[1].ipv4.arp arpRequestSent:vector(packetBytes) ETV
+attr recordingmode vector(packetBytes)
+attr source arpRequestSent
+attr title "ARP request sent, packetBytes"
+vector 74 HospitalNet.host[1].ipv4.arp arpReplySent:vector(packetBytes) ETV
+attr recordingmode vector(packetBytes)
+attr source arpReplySent
+attr title "ARP replies sent, packetBytes"
+vector 75 HospitalNet.host[1].udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 76 HospitalNet.host[1].udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 77 HospitalNet.host[1].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 78 HospitalNet.host[1].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 79 HospitalNet.host[1].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 80 HospitalNet.host[1].app[0] packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 81 HospitalNet.host[1].app[0] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+vector 82 HospitalNet.host[1].app[0] endToEndDelay:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source dataAge(packetReceived)
+attr title "end-to-end delay"
+attr unit s
+vector 83 HospitalNet.host[1].app[0] rcvdPkSeqNo:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source appPkSeqNo(packetReceived)
+attr title "received packet sequence number"
+vector 84 HospitalNet.monitor[0].lo[0].lo rcvdPkFromHl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromUpper
+attr title "packets received from higher layer, packetBytes"
+vector 85 HospitalNet.monitor[0].lo[0].lo passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 86 HospitalNet.monitor[0].lo[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 87 HospitalNet.monitor[0].lo[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 88 HospitalNet.monitor[0].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 89 HospitalNet.monitor[0].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 90 HospitalNet.monitor[0].wlan[0].queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 91 HospitalNet.monitor[0].wlan[0].queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 92 HospitalNet.monitor[0].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 93 HospitalNet.monitor[0].wlan[0].queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 94 HospitalNet.monitor[0].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 95 HospitalNet.monitor[0].wlan[0].queue droppedPacketLengthsQueueOverflow:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropReasonIsQueueOverflow(packetDropped))
+attr title "dropped packet lengths: queue overflow"
+attr unit b
+vector 96 HospitalNet.monitor[0].wlan[0].queue flowQueueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(demuxFlow(packetPulled))
+attr title "flow queueing times"
+attr unit s
+vector 97 HospitalNet.monitor[0].wlan[0].queue flowIncomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPushStarted)))
+attr title "flow specific incoming data rate"
+attr unit bps
+vector 98 HospitalNet.monitor[0].wlan[0].queue flowOutgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPulled)))
+attr title "flow specific outgoing data rate"
+attr unit bps
+vector 99 HospitalNet.monitor[0].wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 100 HospitalNet.monitor[0].wlan[0].mac packetDropIncorrectlyReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packet drop: incorrectly received, packetBytes"
+vector 101 HospitalNet.monitor[0].wlan[0].mac packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drop: queue overflow, packetBytes"
+vector 102 HospitalNet.monitor[0].wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drop: retry limit reached, packetBytes"
+vector 103 HospitalNet.monitor[0].wlan[0].mac packetDropBackoffLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsCongestion(packetDropped)
+attr title "packet drop: backoff limit reached, packetBytes"
+vector 104 HospitalNet.monitor[0].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 105 HospitalNet.monitor[0].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 106 HospitalNet.monitor[0].wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 107 HospitalNet.monitor[0].wlan[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 108 HospitalNet.monitor[0].wlan[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 109 HospitalNet.monitor[0].ipv4.ip packetDropAddressResolutionFailed:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsAddressResolutionFailed(packetDropped)
+attr title "packet drop: address resolution failed, packetBytes"
+vector 110 HospitalNet.monitor[0].ipv4.ip packetDropHopLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsHopLimitReached(packetDropped)
+attr title "packet drop: hop limit reached, packetBytes"
+vector 111 HospitalNet.monitor[0].ipv4.ip packetDropForwardingDisabled:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsForwardingDisabled(packetDropped)
+attr title "packet drop: forwarding disabled, packetBytes"
+vector 112 HospitalNet.monitor[0].ipv4.ip packetDropNoInterfaceFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoInterfaceFound(packetDropped)
+attr title "packet drop: no interface found, packetBytes"
+vector 113 HospitalNet.monitor[0].ipv4.ip packetDropNoRouteFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoRouteFound(packetDropped)
+attr title "packet drop: no route found, packetBytes"
+vector 114 HospitalNet.monitor[0].ipv4.ip packetDropUndefined:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsUndefined(packetDropped)
+attr title "packet drop: undefined, packetBytes"
+vector 115 HospitalNet.monitor[0].ipv4.arp arpRequestSent:vector(packetBytes) ETV
+attr recordingmode vector(packetBytes)
+attr source arpRequestSent
+attr title "ARP request sent, packetBytes"
+vector 116 HospitalNet.monitor[0].ipv4.arp arpReplySent:vector(packetBytes) ETV
+attr recordingmode vector(packetBytes)
+attr source arpReplySent
+attr title "ARP replies sent, packetBytes"
+vector 117 HospitalNet.monitor[0].udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 118 HospitalNet.monitor[0].udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 119 HospitalNet.monitor[0].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 120 HospitalNet.monitor[0].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 121 HospitalNet.monitor[0].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 122 HospitalNet.monitor[0].app[0] packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 123 HospitalNet.monitor[0].app[0] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+vector 124 HospitalNet.monitor[0].app[0] packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 125 HospitalNet.monitor[0].app[0] rcvdPkLifetime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source dataAge(packetReceived)
+attr title "received packet lifetime"
+attr unit s
+vector 126 HospitalNet.monitor[0].app[0] rcvdPkSeqNo:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source appPkSeqNo(packetReceived)
+attr title "received packet sequence number"
+4	0	0	0
+4	0	0	0
+4	0	0	0
+4	0	0	0
+4	0	0	0
+5	0	0	0
+5	0	0	0
+5	0	0	0
+5	0	0	0
+5	0	0	0
+20	0	0	0
+20	0	0	0
+20	0	0	2
+21	0	0	1
+21	315	15.002560021093	3
+21	318	15.003936021093	1
+21	328	15.004256039019	3
+35	0	0	0
+36	0	0	0
+37	0	0	0
+46	0	0	0
+46	0	0	0
+46	0	0	0
+46	0	0	0
+46	0	0	0
+46	324	15.003936022372	1
+46	326	15.004064022372	0
+47	0	0	0
+47	0	0	0
+47	0	0	0
+47	0	0	0
+47	0	0	0
+47	324	15.003936022372	224
+47	326	15.004064022372	0
+48	326	15.004064022372	0.000128
+49	324	15.003936022372	224
+50	324	0.1	0
+50	324	0.2	0
+50	324	0.3	0
+50	324	0.4	0
+50	324	0.5	0
+50	324	0.6	0
+50	324	0.7	0
+50	324	0.8	0
+50	324	0.9	0
+50	324	1	0
+50	324	1.1	0
+50	324	1.2	0
+50	324	1.3	0
+50	324	1.4	0
+50	324	1.5	0
+50	324	1.6	0
+50	324	1.7	0
+50	324	1.8	0
+50	324	1.9	0
+50	324	2	0
+50	324	2.1	0
+50	324	2.2	0
+50	324	2.3	0
+50	324	2.4	0
+50	324	2.5	0
+50	324	2.6	0
+50	324	2.7	0
+50	324	2.8	0
+50	324	2.9	0
+50	324	3	0
+50	324	3.1	0
+50	324	3.2	0
+50	324	3.3	0
+50	324	3.4	0
+50	324	3.5	0
+50	324	3.6	0
+50	324	3.7	0
+50	324	3.8	0
+50	324	3.9	0
+50	324	4	0
+50	324	4.1	0
+50	324	4.2	0
+50	324	4.3	0
+50	324	4.4	0
+50	324	4.5	0
+50	324	4.6	0
+50	324	4.7	0
+50	324	4.8	0
+50	324	4.9	0
+50	324	5	0
+50	324	5.1	0
+50	324	5.2	0
+50	324	5.3	0
+50	324	5.4	0
+50	324	5.5	0
+50	324	5.6	0
+50	324	5.7	0
+50	324	5.8	0
+50	324	5.9	0
+50	324	6	0
+50	324	6.1	0
+50	324	6.2	0
+50	324	6.3	0
+50	324	6.4	0
+50	324	6.5	0
+50	324	6.6	0
+50	324	6.7	0
+50	324	6.8	0
+50	324	6.9	0
+50	324	7	0
+50	324	7.1	0
+50	324	7.2	0
+50	324	7.3	0
+50	324	7.4	0
+50	324	7.5	0
+50	324	7.6	0
+50	324	7.7	0
+50	324	7.8	0
+50	324	7.9	0
+50	324	8	0
+50	324	8.1	0
+50	324	8.2	0
+50	324	8.3	0
+50	324	8.4	0
+50	324	8.5	0
+50	324	8.6	0
+50	324	8.7	0
+50	324	8.8	0
+50	324	8.9	0
+50	324	9	0
+50	324	9.1	0
+50	324	9.2	0
+50	324	9.3	0
+50	324	9.4	0
+50	324	9.5	0
+50	324	9.6	0
+50	324	9.7	0
+50	324	9.8	0
+50	324	9.9	0
+50	324	10	0
+50	324	10.1	0
+50	324	10.2	0
+50	324	10.3	0
+50	324	10.4	0
+50	324	10.5	0
+50	324	10.6	0
+50	324	10.7	0
+50	324	10.8	0
+50	324	10.9	0
+50	324	11	0
+50	324	11.1	0
+50	324	11.2	0
+50	324	11.3	0
+50	324	11.4	0
+50	324	11.5	0
+50	324	11.6	0
+50	324	11.7	0
+50	324	11.8	0
+50	324	11.9	0
+50	324	12	0
+50	324	12.1	0
+50	324	12.2	0
+50	324	12.3	0
+50	324	12.4	0
+50	324	12.5	0
+50	324	12.6	0
+50	324	12.7	0
+50	324	12.8	0
+50	324	12.9	0
+50	324	13	0
+50	324	13.1	0
+50	324	13.2	0
+50	324	13.3	0
+50	324	13.4	0
+50	324	13.5	0
+50	324	13.6	0
+50	324	13.7	0
+50	324	13.8	0
+50	324	13.9	0
+50	324	14	0
+50	324	14.1	0
+50	324	14.2	0
+50	324	14.3	0
+50	324	14.4	0
+50	324	14.5	0
+50	324	14.6	0
+50	324	14.7	0
+50	324	14.8	0
+50	324	14.9	0
+50	324	15	0
+51	326	15.004064022372	224
+52	326	0.1	0
+52	326	0.2	0
+52	326	0.3	0
+52	326	0.4	0
+52	326	0.5	0
+52	326	0.6	0
+52	326	0.7	0
+52	326	0.8	0
+52	326	0.9	0
+52	326	1	0
+52	326	1.1	0
+52	326	1.2	0
+52	326	1.3	0
+52	326	1.4	0
+52	326	1.5	0
+52	326	1.6	0
+52	326	1.7	0
+52	326	1.8	0
+52	326	1.9	0
+52	326	2	0
+52	326	2.1	0
+52	326	2.2	0
+52	326	2.3	0
+52	326	2.4	0
+52	326	2.5	0
+52	326	2.6	0
+52	326	2.7	0
+52	326	2.8	0
+52	326	2.9	0
+52	326	3	0
+52	326	3.1	0
+52	326	3.2	0
+52	326	3.3	0
+52	326	3.4	0
+52	326	3.5	0
+52	326	3.6	0
+52	326	3.7	0
+52	326	3.8	0
+52	326	3.9	0
+52	326	4	0
+52	326	4.1	0
+52	326	4.2	0
+52	326	4.3	0
+52	326	4.4	0
+52	326	4.5	0
+52	326	4.6	0
+52	326	4.7	0
+52	326	4.8	0
+52	326	4.9	0
+52	326	5	0
+52	326	5.1	0
+52	326	5.2	0
+52	326	5.3	0
+52	326	5.4	0
+52	326	5.5	0
+52	326	5.6	0
+52	326	5.7	0
+52	326	5.8	0
+52	326	5.9	0
+52	326	6	0
+52	326	6.1	0
+52	326	6.2	0
+52	326	6.3	0
+52	326	6.4	0
+52	326	6.5	0
+52	326	6.6	0
+52	326	6.7	0
+52	326	6.8	0
+52	326	6.9	0
+52	326	7	0
+52	326	7.1	0
+52	326	7.2	0
+52	326	7.3	0
+52	326	7.4	0
+52	326	7.5	0
+52	326	7.6	0
+52	326	7.7	0
+52	326	7.8	0
+52	326	7.9	0
+52	326	8	0
+52	326	8.1	0
+52	326	8.2	0
+52	326	8.3	0
+52	326	8.4	0
+52	326	8.5	0
+52	326	8.6	0
+52	326	8.7	0
+52	326	8.8	0
+52	326	8.9	0
+52	326	9	0
+52	326	9.1	0
+52	326	9.2	0
+52	326	9.3	0
+52	326	9.4	0
+52	326	9.5	0
+52	326	9.6	0
+52	326	9.7	0
+52	326	9.8	0
+52	326	9.9	0
+52	326	10	0
+52	326	10.1	0
+52	326	10.2	0
+52	326	10.3	0
+52	326	10.4	0
+52	326	10.5	0
+52	326	10.6	0
+52	326	10.7	0
+52	326	10.8	0
+52	326	10.9	0
+52	326	11	0
+52	326	11.1	0
+52	326	11.2	0
+52	326	11.3	0
+52	326	11.4	0
+52	326	11.5	0
+52	326	11.6	0
+52	326	11.7	0
+52	326	11.8	0
+52	326	11.9	0
+52	326	12	0
+52	326	12.1	0
+52	326	12.2	0
+52	326	12.3	0
+52	326	12.4	0
+52	326	12.5	0
+52	326	12.6	0
+52	326	12.7	0
+52	326	12.8	0
+52	326	12.9	0
+52	326	13	0
+52	326	13.1	0
+52	326	13.2	0
+52	326	13.3	0
+52	326	13.4	0
+52	326	13.5	0
+52	326	13.6	0
+52	326	13.7	0
+52	326	13.8	0
+52	326	13.9	0
+52	326	14	0
+52	326	14.1	0
+52	326	14.2	0
+52	326	14.3	0
+52	326	14.4	0
+52	326	14.5	0
+52	326	14.6	0
+52	326	14.7	0
+52	326	14.8	0
+52	326	14.9	0
+52	326	15	0
+62	0	0	0
+62	0	0	0
+62	0	0	2
+62	326	15.004064022372	3
+62	330	15.005632022372	2
+63	0	0	1
+63	316	15.002560022372	3
+63	321	15.003936022372	1
+63	326	15.004064022372	0
+63	330	15.005632022372	1
+64	326	15.004064022372	1
+64	327	15.004256022372	2
+64	330	15.005632022372	1
+64	330	15.005632022372	0
+74	323	15.003936022372	28
+77	0	0	0
+78	0	0	0
+79	0	0	0
+88	0	0	0
+88	0	0	0
+88	0	0	0
+88	0	0	0
+88	0	0	0
+88	311	15	1
+88	313	15.002368	0
+89	0	0	0
+89	0	0	0
+89	0	0	0
+89	0	0	0
+89	0	0	0
+89	311	15	224
+89	313	15.002368	0
+90	313	15.002368	0.002368
+91	311	15	224
+92	311	0.1	0
+92	311	0.2	0
+92	311	0.3	0
+92	311	0.4	0
+92	311	0.5	0
+92	311	0.6	0
+92	311	0.7	0
+92	311	0.8	0
+92	311	0.9	0
+92	311	1	0
+92	311	1.1	0
+92	311	1.2	0
+92	311	1.3	0
+92	311	1.4	0
+92	311	1.5	0
+92	311	1.6	0
+92	311	1.7	0
+92	311	1.8	0
+92	311	1.9	0
+92	311	2	0
+92	311	2.1	0
+92	311	2.2	0
+92	311	2.3	0
+92	311	2.4	0
+92	311	2.5	0
+92	311	2.6	0
+92	311	2.7	0
+92	311	2.8	0
+92	311	2.9	0
+92	311	3	0
+92	311	3.1	0
+92	311	3.2	0
+92	311	3.3	0
+92	311	3.4	0
+92	311	3.5	0
+92	311	3.6	0
+92	311	3.7	0
+92	311	3.8	0
+92	311	3.9	0
+92	311	4	0
+92	311	4.1	0
+92	311	4.2	0
+92	311	4.3	0
+92	311	4.4	0
+92	311	4.5	0
+92	311	4.6	0
+92	311	4.7	0
+92	311	4.8	0
+92	311	4.9	0
+92	311	5	0
+92	311	5.1	0
+92	311	5.2	0
+92	311	5.3	0
+92	311	5.4	0
+92	311	5.5	0
+92	311	5.6	0
+92	311	5.7	0
+92	311	5.8	0
+92	311	5.9	0
+92	311	6	0
+92	311	6.1	0
+92	311	6.2	0
+92	311	6.3	0
+92	311	6.4	0
+92	311	6.5	0
+92	311	6.6	0
+92	311	6.7	0
+92	311	6.8	0
+92	311	6.9	0
+92	311	7	0
+92	311	7.1	0
+92	311	7.2	0
+92	311	7.3	0
+92	311	7.4	0
+92	311	7.5	0
+92	311	7.6	0
+92	311	7.7	0
+92	311	7.8	0
+92	311	7.9	0
+92	311	8	0
+92	311	8.1	0
+92	311	8.2	0
+92	311	8.3	0
+92	311	8.4	0
+92	311	8.5	0
+92	311	8.6	0
+92	311	8.7	0
+92	311	8.8	0
+92	311	8.9	0
+92	311	9	0
+92	311	9.1	0
+92	311	9.2	0
+92	311	9.3	0
+92	311	9.4	0
+92	311	9.5	0
+92	311	9.6	0
+92	311	9.7	0
+92	311	9.8	0
+92	311	9.9	0
+92	311	10	0
+92	311	10.1	0
+92	311	10.2	0
+92	311	10.3	0
+92	311	10.4	0
+92	311	10.5	0
+92	311	10.6	0
+92	311	10.7	0
+92	311	10.8	0
+92	311	10.9	0
+92	311	11	0
+92	311	11.1	0
+92	311	11.2	0
+92	311	11.3	0
+92	311	11.4	0
+92	311	11.5	0
+92	311	11.6	0
+92	311	11.7	0
+92	311	11.8	0
+92	311	11.9	0
+92	311	12	0
+92	311	12.1	0
+92	311	12.2	0
+92	311	12.3	0
+92	311	12.4	0
+92	311	12.5	0
+92	311	12.6	0
+92	311	12.7	0
+92	311	12.8	0
+92	311	12.9	0
+92	311	13	0
+92	311	13.1	0
+92	311	13.2	0
+92	311	13.3	0
+92	311	13.4	0
+92	311	13.5	0
+92	311	13.6	0
+92	311	13.7	0
+92	311	13.8	0
+92	311	13.9	0
+92	311	14	0
+92	311	14.1	0
+92	311	14.2	0
+92	311	14.3	0
+92	311	14.4	0
+92	311	14.5	0
+92	311	14.6	0
+92	311	14.7	0
+92	311	14.8	0
+92	311	14.9	0
+92	311	15	0
+93	313	15.002368	224
+94	313	0.1	0
+94	313	0.2	0
+94	313	0.3	0
+94	313	0.4	0
+94	313	0.5	0
+94	313	0.6	0
+94	313	0.7	0
+94	313	0.8	0
+94	313	0.9	0
+94	313	1	0
+94	313	1.1	0
+94	313	1.2	0
+94	313	1.3	0
+94	313	1.4	0
+94	313	1.5	0
+94	313	1.6	0
+94	313	1.7	0
+94	313	1.8	0
+94	313	1.9	0
+94	313	2	0
+94	313	2.1	0
+94	313	2.2	0
+94	313	2.3	0
+94	313	2.4	0
+94	313	2.5	0
+94	313	2.6	0
+94	313	2.7	0
+94	313	2.8	0
+94	313	2.9	0
+94	313	3	0
+94	313	3.1	0
+94	313	3.2	0
+94	313	3.3	0
+94	313	3.4	0
+94	313	3.5	0
+94	313	3.6	0
+94	313	3.7	0
+94	313	3.8	0
+94	313	3.9	0
+94	313	4	0
+94	313	4.1	0
+94	313	4.2	0
+94	313	4.3	0
+94	313	4.4	0
+94	313	4.5	0
+94	313	4.6	0
+94	313	4.7	0
+94	313	4.8	0
+94	313	4.9	0
+94	313	5	0
+94	313	5.1	0
+94	313	5.2	0
+94	313	5.3	0
+94	313	5.4	0
+94	313	5.5	0
+94	313	5.6	0
+94	313	5.7	0
+94	313	5.8	0
+94	313	5.9	0
+94	313	6	0
+94	313	6.1	0
+94	313	6.2	0
+94	313	6.3	0
+94	313	6.4	0
+94	313	6.5	0
+94	313	6.6	0
+94	313	6.7	0
+94	313	6.8	0
+94	313	6.9	0
+94	313	7	0
+94	313	7.1	0
+94	313	7.2	0
+94	313	7.3	0
+94	313	7.4	0
+94	313	7.5	0
+94	313	7.6	0
+94	313	7.7	0
+94	313	7.8	0
+94	313	7.9	0
+94	313	8	0
+94	313	8.1	0
+94	313	8.2	0
+94	313	8.3	0
+94	313	8.4	0
+94	313	8.5	0
+94	313	8.6	0
+94	313	8.7	0
+94	313	8.8	0
+94	313	8.9	0
+94	313	9	0
+94	313	9.1	0
+94	313	9.2	0
+94	313	9.3	0
+94	313	9.4	0
+94	313	9.5	0
+94	313	9.6	0
+94	313	9.7	0
+94	313	9.8	0
+94	313	9.9	0
+94	313	10	0
+94	313	10.1	0
+94	313	10.2	0
+94	313	10.3	0
+94	313	10.4	0
+94	313	10.5	0
+94	313	10.6	0
+94	313	10.7	0
+94	313	10.8	0
+94	313	10.9	0
+94	313	11	0
+94	313	11.1	0
+94	313	11.2	0
+94	313	11.3	0
+94	313	11.4	0
+94	313	11.5	0
+94	313	11.6	0
+94	313	11.7	0
+94	313	11.8	0
+94	313	11.9	0
+94	313	12	0
+94	313	12.1	0
+94	313	12.2	0
+94	313	12.3	0
+94	313	12.4	0
+94	313	12.5	0
+94	313	12.6	0
+94	313	12.7	0
+94	313	12.8	0
+94	313	12.9	0
+94	313	13	0
+94	313	13.1	0
+94	313	13.2	0
+94	313	13.3	0
+94	313	13.4	0
+94	313	13.5	0
+94	313	13.6	0
+94	313	13.7	0
+94	313	13.8	0
+94	313	13.9	0
+94	313	14	0
+94	313	14.1	0
+94	313	14.2	0
+94	313	14.3	0
+94	313	14.4	0
+94	313	14.5	0
+94	313	14.6	0
+94	313	14.7	0
+94	313	14.8	0
+94	313	14.9	0
+94	313	15	0
+104	0	0	0
+104	0	0	0
+104	0	0	2
+104	313	15.002368	3
+104	317	15.003936	2
+105	0	0	1
+105	313	15.002368	0
+105	317	15.003936	1
+105	329	15.004256044742	3
+106	313	15.002368	1
+106	314	15.00256	2
+106	317	15.003936	1
+106	317	15.003936	0
+115	310	15	28
+117	309	15	48
+119	0	0	0
+120	0	0	0
+121	0	0	0
+124	305	15	40
+8	330	0.1	0
+8	330	0.2	0
+8	330	0.3	0
+8	330	0.4	0
+8	330	0.5	0
+8	330	0.6	0
+8	330	0.7	0
+8	330	0.8	0
+8	330	0.9	0
+8	330	1	0
+8	330	1.1	0
+8	330	1.2	0
+8	330	1.3	0
+8	330	1.4	0
+8	330	1.5	0
+8	330	1.6	0
+8	330	1.7	0
+8	330	1.8	0
+8	330	1.9	0
+8	330	2	0
+8	330	2.1	0
+8	330	2.2	0
+8	330	2.3	0
+8	330	2.4	0
+8	330	2.5	0
+8	330	2.6	0
+8	330	2.7	0
+8	330	2.8	0
+8	330	2.9	0
+8	330	3	0
+8	330	3.1	0
+8	330	3.2	0
+8	330	3.3	0
+8	330	3.4	0
+8	330	3.5	0
+8	330	3.6	0
+8	330	3.7	0
+8	330	3.8	0
+8	330	3.9	0
+8	330	4	0
+8	330	4.1	0
+8	330	4.2	0
+8	330	4.3	0
+8	330	4.4	0
+8	330	4.5	0
+8	330	4.6	0
+8	330	4.7	0
+8	330	4.8	0
+8	330	4.9	0
+8	330	5	0
+8	330	5.1	0
+8	330	5.2	0
+8	330	5.3	0
+8	330	5.4	0
+8	330	5.5	0
+8	330	5.6	0
+8	330	5.7	0
+8	330	5.8	0
+8	330	5.9	0
+8	330	6	0
+8	330	6.1	0
+8	330	6.2	0
+8	330	6.3	0
+8	330	6.4	0
+8	330	6.5	0
+8	330	6.6	0
+8	330	6.7	0
+8	330	6.8	0
+8	330	6.9	0
+8	330	7	0
+8	330	7.1	0
+8	330	7.2	0
+8	330	7.3	0
+8	330	7.4	0
+8	330	7.5	0
+8	330	7.6	0
+8	330	7.7	0
+8	330	7.8	0
+8	330	7.9	0
+8	330	8	0
+8	330	8.1	0
+8	330	8.2	0
+8	330	8.3	0
+8	330	8.4	0
+8	330	8.5	0
+8	330	8.6	0
+8	330	8.7	0
+8	330	8.8	0
+8	330	8.9	0
+8	330	9	0
+8	330	9.1	0
+8	330	9.2	0
+8	330	9.3	0
+8	330	9.4	0
+8	330	9.5	0
+8	330	9.6	0
+8	330	9.7	0
+8	330	9.8	0
+8	330	9.9	0
+8	330	10	0
+8	330	10.1	0
+8	330	10.2	0
+8	330	10.3	0
+8	330	10.4	0
+8	330	10.5	0
+8	330	10.6	0
+8	330	10.7	0
+8	330	10.8	0
+8	330	10.9	0
+8	330	11	0
+8	330	11.1	0
+8	330	11.2	0
+8	330	11.3	0
+8	330	11.4	0
+8	330	11.5	0
+8	330	11.6	0
+8	330	11.7	0
+8	330	11.8	0
+8	330	11.9	0
+8	330	12	0
+8	330	12.1	0
+8	330	12.2	0
+8	330	12.3	0
+8	330	12.4	0
+8	330	12.5	0
+8	330	12.6	0
+8	330	12.7	0
+8	330	12.8	0
+8	330	12.9	0
+8	330	13	0
+8	330	13.1	0
+8	330	13.2	0
+8	330	13.3	0
+8	330	13.4	0
+8	330	13.5	0
+8	330	13.6	0
+8	330	13.7	0
+8	330	13.8	0
+8	330	13.9	0
+8	330	14	0
+8	330	14.1	0
+8	330	14.2	0
+8	330	14.3	0
+8	330	14.4	0
+8	330	14.5	0
+8	330	14.6	0
+8	330	14.7	0
+8	330	14.8	0
+8	330	14.9	0
+8	330	15	0
+8	330	15.005632034822	0
+10	330	0.1	0
+10	330	0.2	0
+10	330	0.3	0
+10	330	0.4	0
+10	330	0.5	0
+10	330	0.6	0
+10	330	0.7	0
+10	330	0.8	0
+10	330	0.9	0
+10	330	1	0
+10	330	1.1	0
+10	330	1.2	0
+10	330	1.3	0
+10	330	1.4	0
+10	330	1.5	0
+10	330	1.6	0
+10	330	1.7	0
+10	330	1.8	0
+10	330	1.9	0
+10	330	2	0
+10	330	2.1	0
+10	330	2.2	0
+10	330	2.3	0
+10	330	2.4	0
+10	330	2.5	0
+10	330	2.6	0
+10	330	2.7	0
+10	330	2.8	0
+10	330	2.9	0
+10	330	3	0
+10	330	3.1	0
+10	330	3.2	0
+10	330	3.3	0
+10	330	3.4	0
+10	330	3.5	0
+10	330	3.6	0
+10	330	3.7	0
+10	330	3.8	0
+10	330	3.9	0
+10	330	4	0
+10	330	4.1	0
+10	330	4.2	0
+10	330	4.3	0
+10	330	4.4	0
+10	330	4.5	0
+10	330	4.6	0
+10	330	4.7	0
+10	330	4.8	0
+10	330	4.9	0
+10	330	5	0
+10	330	5.1	0
+10	330	5.2	0
+10	330	5.3	0
+10	330	5.4	0
+10	330	5.5	0
+10	330	5.6	0
+10	330	5.7	0
+10	330	5.8	0
+10	330	5.9	0
+10	330	6	0
+10	330	6.1	0
+10	330	6.2	0
+10	330	6.3	0
+10	330	6.4	0
+10	330	6.5	0
+10	330	6.6	0
+10	330	6.7	0
+10	330	6.8	0
+10	330	6.9	0
+10	330	7	0
+10	330	7.1	0
+10	330	7.2	0
+10	330	7.3	0
+10	330	7.4	0
+10	330	7.5	0
+10	330	7.6	0
+10	330	7.7	0
+10	330	7.8	0
+10	330	7.9	0
+10	330	8	0
+10	330	8.1	0
+10	330	8.2	0
+10	330	8.3	0
+10	330	8.4	0
+10	330	8.5	0
+10	330	8.6	0
+10	330	8.7	0
+10	330	8.8	0
+10	330	8.9	0
+10	330	9	0
+10	330	9.1	0
+10	330	9.2	0
+10	330	9.3	0
+10	330	9.4	0
+10	330	9.5	0
+10	330	9.6	0
+10	330	9.7	0
+10	330	9.8	0
+10	330	9.9	0
+10	330	10	0
+10	330	10.1	0
+10	330	10.2	0
+10	330	10.3	0
+10	330	10.4	0
+10	330	10.5	0
+10	330	10.6	0
+10	330	10.7	0
+10	330	10.8	0
+10	330	10.9	0
+10	330	11	0
+10	330	11.1	0
+10	330	11.2	0
+10	330	11.3	0
+10	330	11.4	0
+10	330	11.5	0
+10	330	11.6	0
+10	330	11.7	0
+10	330	11.8	0
+10	330	11.9	0
+10	330	12	0
+10	330	12.1	0
+10	330	12.2	0
+10	330	12.3	0
+10	330	12.4	0
+10	330	12.5	0
+10	330	12.6	0
+10	330	12.7	0
+10	330	12.8	0
+10	330	12.9	0
+10	330	13	0
+10	330	13.1	0
+10	330	13.2	0
+10	330	13.3	0
+10	330	13.4	0
+10	330	13.5	0
+10	330	13.6	0
+10	330	13.7	0
+10	330	13.8	0
+10	330	13.9	0
+10	330	14	0
+10	330	14.1	0
+10	330	14.2	0
+10	330	14.3	0
+10	330	14.4	0
+10	330	14.5	0
+10	330	14.6	0
+10	330	14.7	0
+10	330	14.8	0
+10	330	14.9	0
+10	330	15	0
+10	330	15.005632034822	0
+39	330	0.1	0
+39	330	0.2	0
+39	330	0.3	0
+39	330	0.4	0
+39	330	0.5	0
+39	330	0.6	0
+39	330	0.7	0
+39	330	0.8	0
+39	330	0.9	0
+39	330	1	0
+39	330	1.1	0
+39	330	1.2	0
+39	330	1.3	0
+39	330	1.4	0
+39	330	1.5	0
+39	330	1.6	0
+39	330	1.7	0
+39	330	1.8	0
+39	330	1.9	0
+39	330	2	0
+39	330	2.1	0
+39	330	2.2	0
+39	330	2.3	0
+39	330	2.4	0
+39	330	2.5	0
+39	330	2.6	0
+39	330	2.7	0
+39	330	2.8	0
+39	330	2.9	0
+39	330	3	0
+39	330	3.1	0
+39	330	3.2	0
+39	330	3.3	0
+39	330	3.4	0
+39	330	3.5	0
+39	330	3.6	0
+39	330	3.7	0
+39	330	3.8	0
+39	330	3.9	0
+39	330	4	0
+39	330	4.1	0
+39	330	4.2	0
+39	330	4.3	0
+39	330	4.4	0
+39	330	4.5	0
+39	330	4.6	0
+39	330	4.7	0
+39	330	4.8	0
+39	330	4.9	0
+39	330	5	0
+39	330	5.1	0
+39	330	5.2	0
+39	330	5.3	0
+39	330	5.4	0
+39	330	5.5	0
+39	330	5.6	0
+39	330	5.7	0
+39	330	5.8	0
+39	330	5.9	0
+39	330	6	0
+39	330	6.1	0
+39	330	6.2	0
+39	330	6.3	0
+39	330	6.4	0
+39	330	6.5	0
+39	330	6.6	0
+39	330	6.7	0
+39	330	6.8	0
+39	330	6.9	0
+39	330	7	0
+39	330	7.1	0
+39	330	7.2	0
+39	330	7.3	0
+39	330	7.4	0
+39	330	7.5	0
+39	330	7.6	0
+39	330	7.7	0
+39	330	7.8	0
+39	330	7.9	0
+39	330	8	0
+39	330	8.1	0
+39	330	8.2	0
+39	330	8.3	0
+39	330	8.4	0
+39	330	8.5	0
+39	330	8.6	0
+39	330	8.7	0
+39	330	8.8	0
+39	330	8.9	0
+39	330	9	0
+39	330	9.1	0
+39	330	9.2	0
+39	330	9.3	0
+39	330	9.4	0
+39	330	9.5	0
+39	330	9.6	0
+39	330	9.7	0
+39	330	9.8	0
+39	330	9.9	0
+39	330	10	0
+39	330	10.1	0
+39	330	10.2	0
+39	330	10.3	0
+39	330	10.4	0
+39	330	10.5	0
+39	330	10.6	0
+39	330	10.7	0
+39	330	10.8	0
+39	330	10.9	0
+39	330	11	0
+39	330	11.1	0
+39	330	11.2	0
+39	330	11.3	0
+39	330	11.4	0
+39	330	11.5	0
+39	330	11.6	0
+39	330	11.7	0
+39	330	11.8	0
+39	330	11.9	0
+39	330	12	0
+39	330	12.1	0
+39	330	12.2	0
+39	330	12.3	0
+39	330	12.4	0
+39	330	12.5	0
+39	330	12.6	0
+39	330	12.7	0
+39	330	12.8	0
+39	330	12.9	0
+39	330	13	0
+39	330	13.1	0
+39	330	13.2	0
+39	330	13.3	0
+39	330	13.4	0
+39	330	13.5	0
+39	330	13.6	0
+39	330	13.7	0
+39	330	13.8	0
+39	330	13.9	0
+39	330	14	0
+39	330	14.1	0
+39	330	14.2	0
+39	330	14.3	0
+39	330	14.4	0
+39	330	14.5	0
+39	330	14.6	0
+39	330	14.7	0
+39	330	14.8	0
+39	330	14.9	0
+39	330	15	0
+39	330	15.005632034822	0
+50	330	15.005632034822	39772.481364108
+52	330	15.005632034822	39772.481364108
+81	330	0.1	0
+81	330	0.2	0
+81	330	0.3	0
+81	330	0.4	0
+81	330	0.5	0
+81	330	0.6	0
+81	330	0.7	0
+81	330	0.8	0
+81	330	0.9	0
+81	330	1	0
+81	330	1.1	0
+81	330	1.2	0
+81	330	1.3	0
+81	330	1.4	0
+81	330	1.5	0
+81	330	1.6	0
+81	330	1.7	0
+81	330	1.8	0
+81	330	1.9	0
+81	330	2	0
+81	330	2.1	0
+81	330	2.2	0
+81	330	2.3	0
+81	330	2.4	0
+81	330	2.5	0
+81	330	2.6	0
+81	330	2.7	0
+81	330	2.8	0
+81	330	2.9	0
+81	330	3	0
+81	330	3.1	0
+81	330	3.2	0
+81	330	3.3	0
+81	330	3.4	0
+81	330	3.5	0
+81	330	3.6	0
+81	330	3.7	0
+81	330	3.8	0
+81	330	3.9	0
+81	330	4	0
+81	330	4.1	0
+81	330	4.2	0
+81	330	4.3	0
+81	330	4.4	0
+81	330	4.5	0
+81	330	4.6	0
+81	330	4.7	0
+81	330	4.8	0
+81	330	4.9	0
+81	330	5	0
+81	330	5.1	0
+81	330	5.2	0
+81	330	5.3	0
+81	330	5.4	0
+81	330	5.5	0
+81	330	5.6	0
+81	330	5.7	0
+81	330	5.8	0
+81	330	5.9	0
+81	330	6	0
+81	330	6.1	0
+81	330	6.2	0
+81	330	6.3	0
+81	330	6.4	0
+81	330	6.5	0
+81	330	6.6	0
+81	330	6.7	0
+81	330	6.8	0
+81	330	6.9	0
+81	330	7	0
+81	330	7.1	0
+81	330	7.2	0
+81	330	7.3	0
+81	330	7.4	0
+81	330	7.5	0
+81	330	7.6	0
+81	330	7.7	0
+81	330	7.8	0
+81	330	7.9	0
+81	330	8	0
+81	330	8.1	0
+81	330	8.2	0
+81	330	8.3	0
+81	330	8.4	0
+81	330	8.5	0
+81	330	8.6	0
+81	330	8.7	0
+81	330	8.8	0
+81	330	8.9	0
+81	330	9	0
+81	330	9.1	0
+81	330	9.2	0
+81	330	9.3	0
+81	330	9.4	0
+81	330	9.5	0
+81	330	9.6	0
+81	330	9.7	0
+81	330	9.8	0
+81	330	9.9	0
+81	330	10	0
+81	330	10.1	0
+81	330	10.2	0
+81	330	10.3	0
+81	330	10.4	0
+81	330	10.5	0
+81	330	10.6	0
+81	330	10.7	0
+81	330	10.8	0
+81	330	10.9	0
+81	330	11	0
+81	330	11.1	0
+81	330	11.2	0
+81	330	11.3	0
+81	330	11.4	0
+81	330	11.5	0
+81	330	11.6	0
+81	330	11.7	0
+81	330	11.8	0
+81	330	11.9	0
+81	330	12	0
+81	330	12.1	0
+81	330	12.2	0
+81	330	12.3	0
+81	330	12.4	0
+81	330	12.5	0
+81	330	12.6	0
+81	330	12.7	0
+81	330	12.8	0
+81	330	12.9	0
+81	330	13	0
+81	330	13.1	0
+81	330	13.2	0
+81	330	13.3	0
+81	330	13.4	0
+81	330	13.5	0
+81	330	13.6	0
+81	330	13.7	0
+81	330	13.8	0
+81	330	13.9	0
+81	330	14	0
+81	330	14.1	0
+81	330	14.2	0
+81	330	14.3	0
+81	330	14.4	0
+81	330	14.5	0
+81	330	14.6	0
+81	330	14.7	0
+81	330	14.8	0
+81	330	14.9	0
+81	330	15	0
+81	330	15.005632034822	0
+92	330	15.005632034822	39772.481364108
+94	330	15.005632034822	39772.481364108
+123	330	0.1	0
+123	330	0.2	0
+123	330	0.3	0
+123	330	0.4	0
+123	330	0.5	0
+123	330	0.6	0
+123	330	0.7	0
+123	330	0.8	0
+123	330	0.9	0
+123	330	1	0
+123	330	1.1	0
+123	330	1.2	0
+123	330	1.3	0
+123	330	1.4	0
+123	330	1.5	0
+123	330	1.6	0
+123	330	1.7	0
+123	330	1.8	0
+123	330	1.9	0
+123	330	2	0
+123	330	2.1	0
+123	330	2.2	0
+123	330	2.3	0
+123	330	2.4	0
+123	330	2.5	0
+123	330	2.6	0
+123	330	2.7	0
+123	330	2.8	0
+123	330	2.9	0
+123	330	3	0
+123	330	3.1	0
+123	330	3.2	0
+123	330	3.3	0
+123	330	3.4	0
+123	330	3.5	0
+123	330	3.6	0
+123	330	3.7	0
+123	330	3.8	0
+123	330	3.9	0
+123	330	4	0
+123	330	4.1	0
+123	330	4.2	0
+123	330	4.3	0
+123	330	4.4	0
+123	330	4.5	0
+123	330	4.6	0
+123	330	4.7	0
+123	330	4.8	0
+123	330	4.9	0
+123	330	5	0
+123	330	5.1	0
+123	330	5.2	0
+123	330	5.3	0
+123	330	5.4	0
+123	330	5.5	0
+123	330	5.6	0
+123	330	5.7	0
+123	330	5.8	0
+123	330	5.9	0
+123	330	6	0
+123	330	6.1	0
+123	330	6.2	0
+123	330	6.3	0
+123	330	6.4	0
+123	330	6.5	0
+123	330	6.6	0
+123	330	6.7	0
+123	330	6.8	0
+123	330	6.9	0
+123	330	7	0
+123	330	7.1	0
+123	330	7.2	0
+123	330	7.3	0
+123	330	7.4	0
+123	330	7.5	0
+123	330	7.6	0
+123	330	7.7	0
+123	330	7.8	0
+123	330	7.9	0
+123	330	8	0
+123	330	8.1	0
+123	330	8.2	0
+123	330	8.3	0
+123	330	8.4	0
+123	330	8.5	0
+123	330	8.6	0
+123	330	8.7	0
+123	330	8.8	0
+123	330	8.9	0
+123	330	9	0
+123	330	9.1	0
+123	330	9.2	0
+123	330	9.3	0
+123	330	9.4	0
+123	330	9.5	0
+123	330	9.6	0
+123	330	9.7	0
+123	330	9.8	0
+123	330	9.9	0
+123	330	10	0
+123	330	10.1	0
+123	330	10.2	0
+123	330	10.3	0
+123	330	10.4	0
+123	330	10.5	0
+123	330	10.6	0
+123	330	10.7	0
+123	330	10.8	0
+123	330	10.9	0
+123	330	11	0
+123	330	11.1	0
+123	330	11.2	0
+123	330	11.3	0
+123	330	11.4	0
+123	330	11.5	0
+123	330	11.6	0
+123	330	11.7	0
+123	330	11.8	0
+123	330	11.9	0
+123	330	12	0
+123	330	12.1	0
+123	330	12.2	0
+123	330	12.3	0
+123	330	12.4	0
+123	330	12.5	0
+123	330	12.6	0
+123	330	12.7	0
+123	330	12.8	0
+123	330	12.9	0
+123	330	13	0
+123	330	13.1	0
+123	330	13.2	0
+123	330	13.3	0
+123	330	13.4	0
+123	330	13.5	0
+123	330	13.6	0
+123	330	13.7	0
+123	330	13.8	0
+123	330	13.9	0
+123	330	14	0
+123	330	14.1	0
+123	330	14.2	0
+123	330	14.3	0
+123	330	14.4	0
+123	330	14.5	0
+123	330	14.6	0
+123	330	14.7	0
+123	330	14.8	0
+123	330	14.9	0
+123	330	15	0
+123	330	15.005632034822	0
+
