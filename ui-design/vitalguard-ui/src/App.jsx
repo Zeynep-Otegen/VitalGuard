@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // useEffect eklendi
+import axios from 'axios'; // axios eklendi
 import PerformanceLogs from './PerformanceLogs';
 import ActiveWristbands from './ActiveWristbands';
 import NetworkManagement from './NetworkManagement';
@@ -6,6 +7,81 @@ import Settings from './Settings';
 
 function App() {
   const [activeTab, setActiveTab] = useState('settings');
+
+  const [alarms, setAlarms] = useState([]);// Gerçek alarmları tutacağımız yer
+
+ const [nurses, setNurses] = useState([]); // Artık içi boş, veritabanından dolacak!
+
+ const [perfLogs, setPerfLogs] = useState([]);
+
+  // Toplam aktif cihaz (Oda) sayımız (örneğin 6 odamız var)
+  const totalNodes = 6;
+  
+  useEffect(() => {
+    // 1. Sayfa ilk açıldığında aktif alarmları veritabanından çek (Axios)
+    const fetchActiveAlarms = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/alarms/active');
+        setAlarms(response.data);
+      } catch (error) {
+        console.error("Alarmlar çekilirken hata oluştu:", error);
+      }
+    };
+    fetchActiveAlarms();
+// 1.5 Hemşire Listesini Veritabanından Çek
+    const fetchNurses = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/nurses');
+        setNurses(response.data);
+      } catch (error) {
+        console.error("Hemşireler çekilirken hata oluştu:", error);
+      }
+    };
+    fetchNurses();
+    
+    // 1.6 Performans Loglarını Çek
+    const fetchPerfLogs = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/performance-logs');
+        setPerfLogs(response.data);
+      } catch (error) {
+        console.error("Loglar çekilirken hata oluştu:", error);
+      }
+    };
+    fetchPerfLogs();
+    
+    // Bunu da interval içine ekleyebilirsin, böylece kriz çözüldükçe tablo otomatik güncellenir:
+    const logsInterval = setInterval(fetchPerfLogs, 3000);
+    // Hemşirelerin durumunu ve konumunu canlı tutmak için her 3 saniyede bir güncelle
+    const nurseInterval = setInterval(fetchNurses, 3000);
+    // 2. Canlı WebSocket Bağlantısını Başlat
+    const socket = new WebSocket('ws://localhost:8000/ws/alarms');
+
+    socket.onmessage = (event) => {
+      const socketData = JSON.parse(event.data);
+      
+      // Eğer yeni bir kriz geldiyse listeye ekle
+      if (socketData.status === "CRISIS") {
+         setAlarms(prevAlarms => [{
+           id: socketData.alarm_id,
+           device_id: socketData.device_id,
+           status: "Aktif Kriz",
+           assigned_nurse: socketData.assigned_nurse,
+           created_at: socketData.timestamp
+         }, ...prevAlarms]);
+      } 
+      // Eğer bir kriz çözüldüyse listeden çıkar
+      else if (socketData.status === "RESOLVED") {
+         setAlarms(prevAlarms => prevAlarms.filter(a => a.id !== socketData.alarm_id));
+      }
+    };
+
+    return () => {
+      socket.close();
+      clearInterval(nurseInterval);
+      clearInterval(logsInterval);
+    } // Temizlik
+  }, []);
 
   return (
     <div className="bg-[#f8f9fa] text-zinc-900 antialiased min-h-screen font-sans">
@@ -90,7 +166,7 @@ function App() {
               <div className="p-8 border-r border-zinc-200">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-4">Aktif Alarm Monitörü</p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-black tracking-tighter">12</span>
+                  <span className="text-5xl font-black tracking-tighter">{totalNodes}</span>
                   <span className="text-[11px] font-bold text-emerald-500 uppercase">Node Bağlı</span>
                 </div>
                 <p className="text-[9px] font-bold text-emerald-500 uppercase mt-4 flex items-center gap-1">
@@ -109,7 +185,7 @@ function App() {
                     <span className="material-symbols-outlined text-sm">warning</span> Bekleyen Alarmlar
                   </p>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-6xl font-black tracking-tighter text-[#FF0000]">03</span>
+                    <span className="text-6xl font-black tracking-tighter text-[#FF0000]">{alarms.length < 10 ? `0${alarms.length}` : alarms.length}</span>
                     <span className="text-[11px] font-bold text-[#FF0000] uppercase">Kritik</span>
                   </div>
                   <button className="w-full mt-4 py-3 bg-[#FF0000] text-white text-[11px] font-black uppercase hover:bg-red-700 transition-colors">Hemen Müdahale Et</button>
@@ -119,97 +195,80 @@ function App() {
 
             {/* Map and List Section */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              
               {/* Floor Map */}
               <div className="lg:col-span-8 space-y-4">
                 <div className="flex justify-between items-end">
-                  <h2 className="text-[13px] font-black uppercase tracking-widest">Kat Planı ve Konum Noktaları — BLE İzleme</h2>
-                  <div className="flex gap-2">
-                    <span className="text-[9px] font-bold text-amber-500 border border-amber-200 bg-amber-50 px-2 py-1 uppercase">OMNET++ Routing Active</span>
-                    <span className="text-[9px] font-bold text-white bg-black px-2 py-1 uppercase">Kat 4</span>
-                  </div>
+                  <h2 className="text-[13px] font-black uppercase tracking-widest">Kat Planı ve Konum Noktaları</h2>
                 </div>
                 <div className="relative bg-white border-4 border-zinc-800 aspect-[16/9] p-2">
                   <div className="grid grid-cols-5 grid-rows-2 gap-2 h-full opacity-60">
-                    {[...Array(10)].map((_, i) => (
-                      <div key={i} className="border-2 border-zinc-200 bg-zinc-50 flex items-start p-2 relative">
-                        <span className="text-[9px] font-bold text-zinc-400">{401 + i}</span>
-                        {/* Fake data dots */}
-                        {i === 1 && <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-emerald-400 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>}
-                        {i === 3 && <div className="absolute top-1/2 left-3/4 w-4 h-4 bg-emerald-400 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>}
-                        {i === 7 && <span className="absolute top-1/2 left-1/2 text-[10px] font-bold text-[#FF0000] uppercase transform -translate-x-1/2 -translate-y-1/2 -mt-4">408 Alarm</span>}
-                      </div>
-                    ))}
+                    {[...Array(10)].map((_, i) => {
+                      const roomNumber = 401 + i;
+                      const roomStr = `Oda-${roomNumber}`;
+                      const hasAlarm = alarms.some(alarm => alarm.device_id === roomStr);
+
+                      return (
+                        <div key={i} className={`border-2 flex items-start p-2 relative transition-all duration-300 ${hasAlarm ? 'border-[#FF0000] bg-red-100 shadow-inner' : 'border-zinc-200 bg-zinc-50'}`}>
+                          <span className={`text-[9px] font-black ${hasAlarm ? 'text-[#FF0000]' : 'text-zinc-400'}`}>
+                            {roomNumber}
+                          </span>
+                          
+                          {/* Sadece kriz varsa yanan nokta */}
+                          {hasAlarm && (
+                            <div className="absolute top-1/2 left-1/2 w-6 h-6 bg-[#FF0000] rounded-full animate-pulse transform -translate-x-1/2 -translate-y-1/2 shadow-lg z-10 border-2 border-white"></div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                   {/* Nöbetçi Bankosu Box */}
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border-2 border-zinc-400 px-6 py-2 text-[10px] font-black uppercase">
                     Nöbetçi Bankosu
                   </div>
-                  {/* Alarm Dot */}
-                  <div className="absolute bottom-[30%] left-[55%] w-6 h-6 bg-[#FF0000] rounded-full animate-pulse border-2 border-white shadow-lg z-10"></div>
-                  
-                  {/* Map Legend */}
-                  <div className="absolute bottom-4 left-4 bg-white border border-zinc-300 p-2 text-[8px] font-bold uppercase text-zinc-500 flex gap-4">
-                    <div className="flex items-center gap-1"><div className="w-2 h-2 bg-emerald-400 rounded-full"></div> Müsait Personel</div>
-                    <div className="flex items-center gap-1"><div className="w-2 h-2 bg-[#FF0000] rounded-full"></div> Alarm Kaynağı</div>
-                  </div>
                 </div>
               </div>
-
+              {/* Personnel List */}
               {/* Personnel List */}
               <div className="lg:col-span-4 space-y-4">
                 <h2 className="text-[13px] font-black uppercase tracking-widest">Hemşire Durum Listesi</h2>
                 <div className="space-y-3">
-                  {/* Person 1 */}
-                  <div className="bg-white border border-zinc-200 p-4 flex items-center justify-between shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-zinc-100 flex items-center justify-center text-zinc-400 border border-zinc-200">
-                        <span className="material-symbols-outlined text-xl">person</span>
-                      </div>
-                      <div>
-                        <div className="text-xs font-black uppercase">Fatma Derin</div>
-                        <div className="text-[8px] font-bold text-zinc-500 uppercase mt-0.5">Sinyal: Güçlü | Node ID: #1042 <br/> Gecikme: 2ms</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[9px] font-black text-emerald-600 uppercase tracking-wider">Müsait</span>
-                      <div className="w-2.5 h-2.5 bg-emerald-500"></div>
-                    </div>
-                  </div>
-                  {/* Person 2 */}
-                  <div className="bg-white border border-zinc-200 p-4 flex items-center justify-between shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-zinc-100 flex items-center justify-center text-zinc-400 border border-zinc-200">
-                        <span className="material-symbols-outlined text-xl">person</span>
-                      </div>
-                      <div>
-                        <div className="text-xs font-black uppercase">Ahmet Yılmaz</div>
-                        <div className="text-[8px] font-bold text-zinc-500 uppercase mt-0.5">Sinyal: Orta | Node ID: #1055 <br/> Gecikme: 5ms</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[9px] font-black text-[#FF0000] uppercase tracking-wider">Meşgul</span>
-                      <div className="w-2.5 h-2.5 bg-[#FF0000]"></div>
-                    </div>
-                  </div>
-                  {/* Person 3 */}
-                  <div className="bg-white border border-zinc-200 p-4 flex items-center justify-between shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-zinc-100 flex items-center justify-center text-zinc-400 border border-zinc-200">
-                        <span className="material-symbols-outlined text-xl">person</span>
-                      </div>
-                      <div>
-                        <div className="text-xs font-black uppercase">Selin Aktaş</div>
-                        <div className="text-[8px] font-bold text-zinc-500 uppercase mt-0.5">Sinyal: Zayıf | Node ID: #1021 <br/> Gecikme: 1ms</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[9px] font-black text-amber-500 uppercase tracking-wider">Yolda</span>
-                      <div className="w-2.5 h-2.5 bg-amber-500"></div>
-                    </div>
-                  </div>
                   
+                  {/* Hemşireleri State'den Çekerek Döndürüyoruz */}
+                  {nurses.map((nurse, index) => (
+                    <div key={index} className="bg-white border border-zinc-200 p-4 flex items-center justify-between shadow-sm animate-in fade-in duration-500">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-zinc-100 flex items-center justify-center text-zinc-400 border border-zinc-200">
+                          <span className="material-symbols-outlined text-xl">person</span>
+                        </div>
+                        <div>
+                          {/* VERİTABANI İLE EŞLEŞTİRİLDİ: full_name */}
+                          <div className="text-xs font-black uppercase text-zinc-900">{nurse.full_name}</div>
+                          
+                          {/* VERİTABANI İLE EŞLEŞTİRİLDİ: signal_strength ve wristband_id */}
+                          <div className="text-[8px] font-bold text-zinc-500 uppercase mt-0.5 tracking-wider">
+                            Sinyal: {nurse.signal_strength} dBm | Bileklik: {nurse.wristband_id}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {/* Duruma göre renk belirleme */}
+                        <span className={`text-[9px] font-black uppercase tracking-wider ${
+                          nurse.status === 'MÜSAİT' ? 'text-emerald-600' : 
+                          nurse.status === 'MEŞGUL' ? 'text-[#FF0000]' : 'text-amber-500'
+                        }`}>
+                          {nurse.status}
+                        </span>
+                        <div className={`w-2.5 h-2.5 shadow-sm ${
+                          nurse.status === 'MÜSAİT' ? 'bg-emerald-500' : 
+                          nurse.status === 'MEŞGUL' ? 'bg-[#FF0000]' : 'bg-amber-500'
+                        }`}></div>
+                      </div>
+                    </div>
+                  ))}
+
                   <button className="w-full py-3 bg-zinc-100 border border-zinc-200 text-[9px] font-black uppercase tracking-widest text-zinc-500 hover:bg-zinc-200 transition-colors">
-                    Toplam 24 Personel Aktif
+                    Toplam {nurses.length} Personel Aktif
                   </button>
                 </div>
               </div>
@@ -222,42 +281,33 @@ function App() {
               <div className="lg:col-span-7 space-y-4">
                 <div className="flex justify-between items-end border-b-2 border-[#FF0000] pb-2">
                   <h2 className="text-[13px] font-black text-[#FF0000] uppercase tracking-widest">Bekleyen Kritik Alarmlar</h2>
-                  <span className="text-[9px] font-bold text-[#FF0000] uppercase tracking-wider">3 Aktif Kuyruk</span>
+                  <span className="text-[9px] font-bold text-[#FF0000] uppercase tracking-wider">{alarms.length} Aktif Kuyruk</span>
                 </div>
                 <div className="space-y-3">
-                  {/* Alarm 1 */}
-                  <div className="bg-red-50 border border-red-100 p-4 flex items-center justify-between shadow-sm">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-[#FF0000] text-white flex items-center justify-center font-black text-2xl shadow-inner">408</div>
-                      <div>
-                        <div className="text-sm font-black uppercase text-zinc-900 tracking-wide">Düşük Nabız (Vitals)</div>
-                        <div className="text-[10px] font-bold text-[#FF0000] uppercase mt-1 tracking-wider">Müdahale Bekleniyor - 01:45</div>
+                 {/* SAHTE ALARMLAR YERİNE GERÇEK VERİ DÖNGÜSÜ */}
+                  {alarms.length === 0 ? (
+                    <div className="p-4 text-center text-sm font-bold text-zinc-500 uppercase">Aktif kriz bulunmuyor.</div>
+                  ) : (
+                    alarms.map((alarm) => (
+                      <div key={alarm.id} className="bg-red-50 border border-red-100 p-4 flex items-center justify-between shadow-sm">
+                        <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 bg-[#FF0000] text-white flex items-center justify-center font-black text-xs shadow-inner text-center">
+                            {alarm.device_id}
+                          </div>
+                          <div>
+                            <div className="text-sm font-black uppercase text-zinc-900 tracking-wide">Kritik Bulgular (Vitals)</div>
+                            <div className="text-[10px] font-bold text-[#FF0000] uppercase mt-1 tracking-wider">
+                              Yönlendirilen: {alarm.assigned_nurse}
+                            </div>
+                          </div>
+                        </div>
+                        <button className="px-5 py-2.5 border-2 border-[#FF0000] text-[#FF0000] text-[10px] font-black uppercase hover:bg-[#FF0000] hover:text-white transition-colors bg-white">
+                          Detay Göster
+                        </button>
                       </div>
-                    </div>
-                    <button className="px-5 py-2.5 border-2 border-[#FF0000] text-[#FF0000] text-[10px] font-black uppercase hover:bg-[#FF0000] hover:text-white transition-colors bg-white">Atama Yap</button>
-                  </div>
-                  {/* Alarm 2 */}
-                  <div className="bg-red-50 border border-red-100 p-4 flex items-center justify-between shadow-sm">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-[#FF0000] text-white flex items-center justify-center font-black text-2xl shadow-inner">203</div>
-                      <div>
-                        <div className="text-sm font-black uppercase text-zinc-900 tracking-wide">Yardım Çağrısı (Manuel)</div>
-                        <div className="text-[10px] font-bold text-zinc-600 uppercase mt-1 tracking-wider">Selin Aktaş Yönlendirildi - 00:30</div>
-                      </div>
-                    </div>
-                    <button className="px-5 py-2.5 bg-[#FF0000] text-white text-[10px] font-black uppercase shadow-sm">Yolda</button>
-                  </div>
-                  {/* Alarm 3 */}
-                  <div className="bg-red-50 border border-red-100 p-4 flex items-center justify-between shadow-sm">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-[#FF0000] text-white flex items-center justify-center font-black text-2xl shadow-inner">312</div>
-                      <div>
-                        <div className="text-sm font-black uppercase text-zinc-900 tracking-wide">Düşme Algılandı (Akselerometre)</div>
-                        <div className="text-[10px] font-bold text-[#FF0000] uppercase mt-1 tracking-wider">Müdahale Bekleniyor - 02:10</div>
-                      </div>
-                    </div>
-                    <button className="px-5 py-2.5 border-2 border-[#FF0000] text-[#FF0000] text-[10px] font-black uppercase hover:bg-[#FF0000] hover:text-white transition-colors bg-white">Atama Yap</button>
-                  </div>
+                    ))
+                  )}
+
                 </div>
               </div>
 
@@ -314,11 +364,11 @@ function App() {
             </div>
           </div>
         ) : activeTab === 'history' ? (
-          <PerformanceLogs />
+          <PerformanceLogs logs={perfLogs} />
         ) : activeTab === 'watch' ? (
-          <ActiveWristbands />
+          <ActiveWristbands nurses={nurses} />
         ) : activeTab === 'hub' ? (
-          <NetworkManagement />
+          <NetworkManagement nurses={nurses} />
         ) : activeTab === 'settings' ? (
           <Settings />
         ) : (
