@@ -1,64 +1,60 @@
-import pandas as pd
+import requests
+import time
 import random
-from datetime import datetime, timedelta
 
-def generate_vital_data(num_records=1000):
-    data = []
-    current_time = datetime.now()
-    devices = ["MAC-001", "MAC-002", "MAC-003", "MAC-004", "MAC-005"]
+# Hastalar (Odalar)
+CIHAZLAR = ["Oda-401", "Oda-402", "Oda-403", "Oda-408", "Oda-203", "Oda-312"]
+# Hemşire Bileklikleri (Neon'daki ID'ler)
+HEMSIRELER = ["BW-1042", "BW-1055", "BW-1021", "BW-1099"]
 
-    # Her cihaz için krizin kaç adım (saniye) daha süreceğini takip eden sözlük
-    crisis_counters = {dev: 0 for dev in devices}
-
-    for _ in range(num_records):
-        device_id = random.choice(devices)
-        current_time += timedelta(seconds=random.randint(1, 3))
-        timestamp = current_time.strftime("%Y-%m-%d %H:%M:%S")
+def start_live_simulation():
+    print("Gelişmiş simülasyon başlıyor...")
+    while True:
+        # Rastgele bir cihaz seç ve ona 5 saniye boyunca veri gönder
+        secilen_cihaz = random.choice(CIHAZLAR)
+        is_crisis_moment = random.random() < 0.3 # %30 ihtimalle bu cihaz kriz çıkarsın
         
-        # 1. Eğer bu cihaz halihazırda bir krizin içindeyse, krizi sürdür
-        if crisis_counters[device_id] > 0:
-            heart_rate = random.randint(121, 150) # Nabız hala yüksek
-            spo2 = random.randint(85, 89)         # Oksijen hala düşük
-            status = "Sustained_Crisis"           # Sürdürülen gerçek kriz
-            label = 1
-            crisis_counters[device_id] -= 1       # Kriz sayacını bir azalt
-            
-        # 2. Cihaz krizde değilse yeni durum belirle
-        else:
-            scenario_chance = random.random()
-            
-            if scenario_chance < 0.70:
-                # NORMAL DURUM
-                heart_rate = random.randint(60, 100)
-                spo2 = random.randint(95, 100)
-                status = "Normal"
-                label = 0 
-                
-            elif scenario_chance < 0.85:
-                # GEÇİCİ SIÇRAMA (Transient Spike) - Hasta kolunu oynattı
-                # Değerler anlık olarak eşiği geçer ama SADECE 1 KEZ olur
-                heart_rate = random.randint(121, 130) 
-                spo2 = random.randint(91, 94)
-                status = "Transient_Spike"
-                label = 0 
-                
+        print(f"\n--- {secilen_cihaz} izleniyor ---")
+        
+        for _ in range(5): # Seçilen cihaz için 5 saniye kesintisiz veri yolla
+            if is_crisis_moment:
+                hr = random.randint(125, 140)
+                spo2 = random.randint(88, 91)
             else:
-                # GERÇEK KRİZ BAŞLANGICI
-                heart_rate = random.randint(121, 150)
-                spo2 = random.randint(85, 89)
-                status = "Crisis_Start"
-                label = 1
-                # Krizin art arda 3 ile 6 ölçüm boyunca devam etmesini sağla
-                crisis_counters[device_id] = random.randint(3, 6) 
+                hr = random.randint(70, 90)
+                spo2 = random.randint(96, 99)
 
-        data.append([device_id, timestamp, heart_rate, spo2, status, label])
+            sample_data = {"device_id": secilen_cihaz, "heart_rate": hr, "spo2": spo2}
+            
+            try:
+                # 1. HASTABAŞI MONİTÖRÜ: Veriyi gönder
+                response = requests.post("http://localhost:8000/api/sensor-data", json=sample_data)
+                res_json = response.json()
+                
+                # Backend'in yeni formatına göre kriz kontrolü
+                if res_json.get("status") == "Alarm Tetiklendi":
+                    print(f"!!! KRİZ ONAYLANDI VE ATAMA YAPILDI: {secilen_cihaz} !!!")
+                elif res_json.get("status") == "Zaten Aktif Kriz Var":
+                    print(f"(! Zaten krizde olan oda: {secilen_cihaz} !)")
+                else:
+                    print(f"Veri Gönderildi: {hr} BPM | %{spo2} SpO2")
+                
+                # 2. HEMŞİRE BİLEKLİKLERİ: Arka planda sessizce konum/pil güncelle
+                # (Merve'nin algoritması için veritabanını canlı tutuyoruz)
+                for h_id in HEMSIRELER:
+                    nurse_data = {
+                        "wristband_id": h_id,
+                        "battery": random.randint(20, 100),
+                        "signal": random.randint(-90, -30),
+                        "location_x": round(random.uniform(0, 100), 2),
+                        "location_y": round(random.uniform(0, 100), 2)
+                    }
+                    requests.post("http://localhost:8000/api/nurse-status", json=nurse_data)
 
-    df = pd.DataFrame(data, columns=["Device_ID", "Timestamp", "Heart_Rate", "SpO2", "Condition", "Is_Crisis"])
-    return df
+            except Exception as e:
+                print("Sunucuya ulaşılamadı!")
+            
+            time.sleep(1)
 
 if __name__ == "__main__":
-    print("Sentetik sensör verileri üretiliyor...")
-    synthetic_df = generate_vital_data(1000)
-    file_name = "synthetic_sensor_data.csv"
-    synthetic_df.to_csv(file_name, index=False)
-    print(f"Başarılı! Veriler '{file_name}' dosyasına kaydedildi.")
+    start_live_simulation()

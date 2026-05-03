@@ -22,6 +22,7 @@ venv/
 # Web / UI Tasarım (Node.js vb. kullanırsanız diye)
 node_modules/
 .env
+backend/.env
 
 # İşletim Sistemi ve Editör Dosyaları
 .vscode/
