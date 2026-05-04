@@ -83,6 +83,21 @@ function App() {
     } // Temizlik
   }, []);
 
+ const handleResolveAlarm = async (alarmId) => {
+    console.log("Sistem tetiklendi! Gelen Alarm ID:", alarmId); 
+    try {
+      await axios.post(`http://localhost:8000/api/alarms/${alarmId}/resolve`);
+      setAlarms(prevAlarms => prevAlarms.filter(a => a.id !== alarmId));
+      
+      const perfResponse = await axios.get('http://localhost:8000/api/performance-logs');
+      setPerfLogs(perfResponse.data);
+      
+      const nurseResponse = await axios.get('http://localhost:8000/api/nurses');
+      setNurses(nurseResponse.data);
+    } catch (error) {
+      console.error("Alarm çözülürken hata oluştu:", error);
+    }
+  };
   return (
     <div className="bg-[#f8f9fa] text-zinc-900 antialiased min-h-screen font-sans">
       {/* SideNavBar */}
@@ -301,9 +316,11 @@ function App() {
                             </div>
                           </div>
                         </div>
-                        <button className="px-5 py-2.5 border-2 border-[#FF0000] text-[#FF0000] text-[10px] font-black uppercase hover:bg-[#FF0000] hover:text-white transition-colors bg-white">
-                          Detay Göster
-                        </button>
+                        <button 
+  onClick={() => handleResolveAlarm(alarm.id)}
+  className="px-5 py-2.5 border-2 border-emerald-500 text-emerald-600 text-[10px] font-black uppercase hover:bg-emerald-500 hover:text-white transition-colors bg-white shadow-sm">
+  Müdahaleyi Tamamla
+</button>
                       </div>
                     ))
                   )}

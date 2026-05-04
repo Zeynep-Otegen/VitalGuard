@@ -136,7 +136,7 @@ def get_active_alarms(db: Session = Depends(get_db)):
     return result
 
 # 3. Alarm Çözme ve Performans Kaydı Alma
-@app.post("/api/alarms/resolve/{alarm_id}")
+@app.post("/api/alarms/{alarm_id}/resolve")  # DÜZELTME 1: Rota React ile birebir aynı yapıldı
 async def resolve_alarm(alarm_id: int, db: Session = Depends(get_db)):
     alarm = db.query(models.AlarmRecord).filter(models.AlarmRecord.id == alarm_id).first()
     
@@ -148,18 +148,21 @@ async def resolve_alarm(alarm_id: int, db: Session = Depends(get_db)):
 
     # Alarmı kapat ve zamanı kaydet
     alarm.status = "ÇÖZÜLDÜ"
-    alarm.resolved_at = datetime.now(timezone.utc)
+    alarm.resolved_at = datetime.now()
     
-    # Süre Farkı (T2 - T0) - Senin hesaplama mantığını korudum
-    fark = alarm.resolved_at - alarm.created_at
+    created_time = alarm.created_at
+    if created_time.tzinfo is not None:
+        created_time = created_time.replace(tzinfo=None)
+        
+    fark = alarm.resolved_at - created_time
     mudahale_suresi_sn = fark.total_seconds()
     
-    # YENİ: Performans Tablosuna Kaydet
+    # Performans Tablosuna Kaydet
     perf_log = models.PerformanceLog(
         alarm_id=alarm.id,
         room_number=alarm.device_id,
         response_time_seconds=round(mudahale_suresi_sn, 2),
-        efficiency_status="Başarılı" if mudahale_suresi_sn <= 5.0 else "Gecikmeli"
+        efficiency_status="Başarılı" if mudahale_suresi_sn <= 2.0 else "Gecikmeli" # DÜZELTME 2: 5 saniye yerine 2.0 saniye hedefi
     )
     db.add(perf_log)
 
