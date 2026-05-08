@@ -74,6 +74,17 @@ function App() {
       else if (socketData.status === "RESOLVED") {
          setAlarms(prevAlarms => prevAlarms.filter(a => a.id !== socketData.alarm_id));
       }
+      else if (socketData.status === "NURSE_REASSIGNED") {
+        setAlarms(prevAlarms => 
+            prevAlarms.map(alarm => 
+                alarm.id === socketData.alarm_id 
+                    ? { ...alarm, assigned_nurse: socketData.nurse } 
+                    : alarm
+            )
+        );
+    }
+
+
     };
 
     return () => {
@@ -328,56 +339,7 @@ function App() {
                 </div>
               </div>
 
-              {/* Performans Logları */}
-              <div className="lg:col-span-5 space-y-4">
-                <div className="flex justify-between items-end border-b-2 border-zinc-800 pb-2">
-                  <h2 className="text-[13px] font-black uppercase tracking-widest text-zinc-900">Performans Logları</h2>
-                  <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Verimlilik: %99.4</span>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  {/* Log 1 */}
-                  <div className="bg-white border border-zinc-200 p-4 shadow-sm">
-                    <div className="flex justify-between items-start mb-3">
-                      <span className="bg-emerald-100 text-emerald-700 text-[9px] font-black px-2 py-1 uppercase tracking-wider">Başarılı</span>
-                      <span className="text-[9px] font-bold text-zinc-400">12:30:11</span>
-                    </div>
-                    <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Müdahale</div>
-                    <div className="text-3xl font-black text-zinc-900 leading-none my-1">0.4s</div>
-                    <div className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mt-2">Oda 402 - OK</div>
-                  </div>
-                  {/* Log 2 */}
-                  <div className="bg-white border border-zinc-200 p-4 shadow-sm">
-                    <div className="flex justify-between items-start mb-3">
-                      <span className="bg-emerald-100 text-emerald-700 text-[9px] font-black px-2 py-1 uppercase tracking-wider">Başarılı</span>
-                      <span className="text-[9px] font-bold text-zinc-400">12:15:42</span>
-                    </div>
-                    <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Müdahale</div>
-                    <div className="text-3xl font-black text-zinc-900 leading-none my-1">1.2s</div>
-                    <div className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mt-2">Oda 408 - OK</div>
-                  </div>
-                  {/* Log 3 */}
-                  <div className="bg-white border border-zinc-200 p-4 shadow-sm">
-                    <div className="flex justify-between items-start mb-3">
-                      <span className="bg-emerald-100 text-emerald-700 text-[9px] font-black px-2 py-1 uppercase tracking-wider">Başarılı</span>
-                      <span className="text-[9px] font-bold text-zinc-400">12:02:15</span>
-                    </div>
-                    <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Müdahale</div>
-                    <div className="text-3xl font-black text-zinc-900 leading-none my-1">0.8s</div>
-                    <div className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mt-2">Oda 312 - OK</div>
-                  </div>
-                  {/* Log 4 */}
-                  <div className="bg-white border border-zinc-200 p-4 shadow-sm">
-                    <div className="flex justify-between items-start mb-3">
-                      <span className="bg-zinc-100 text-zinc-600 text-[9px] font-black px-2 py-1 uppercase tracking-wider">Sistem Log</span>
-                      <span className="text-[9px] font-bold text-zinc-400">11:55:00</span>
-                    </div>
-                    <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Ağ Optimizasyonu</div>
-                    <div className="text-3xl font-black text-zinc-900 leading-none my-1">0ms</div>
-                    <div className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mt-2">Sync Tamam</div>
-                  </div>
-                </div>
-              </div>
-
+              
             </div>
           </div>
         ) : activeTab === 'history' ? (
