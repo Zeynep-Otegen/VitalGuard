@@ -136,7 +136,7 @@ def get_active_alarms(db: Session = Depends(get_db)):
     return result
 
 # 3. Alarm Çözme ve Performans Kaydı Alma
-@app.post("/api/alarms/{alarm_id}/resolve")  # DÜZELTME 1: Rota React ile birebir aynı yapıldı
+@app.post("/api/alarms/{alarm_id}/resolve")
 async def resolve_alarm(alarm_id: int, db: Session = Depends(get_db)):
     alarm = db.query(models.AlarmRecord).filter(models.AlarmRecord.id == alarm_id).first()
     
@@ -146,23 +146,28 @@ async def resolve_alarm(alarm_id: int, db: Session = Depends(get_db)):
     if alarm.status == "ÇÖZÜLDÜ":
         return {"message": "Bu alarm zaten çözülmüş."}
 
-    # Alarmı kapat ve zamanı kaydet
+    # ZAMAN DİLİMİ (TIMEZONE) ÇÖZÜMÜ
+    su_an_utc = datetime.now(timezone.utc)
+    
     alarm.status = "ÇÖZÜLDÜ"
-    alarm.resolved_at = datetime.now()
+    alarm.resolved_at = su_an_utc
     
-    created_time = alarm.created_at
-    if created_time.tzinfo is not None:
-        created_time = created_time.replace(tzinfo=None)
+    # Veritabanındaki saati UTC formatına zorluyoruz ki çıkarma işleminde 3 saat fark çıkmasın
+    kayit_zamani = alarm.created_at
+    if kayit_zamani.tzinfo is None:
+        kayit_zamani = kayit_zamani.replace(tzinfo=timezone.utc)
         
-    fark = alarm.resolved_at - created_time
-    mudahale_suresi_sn = fark.total_seconds()
+    # Artık süre farkı 10800 saniye değil, gerçekteki gibi 1-2 saniye çıkacak
+    fark = su_an_utc - kayit_zamani
+    # Her ihtimale karşı negatif çıkarsa mutlak değer alalım (abs)
+    mudahale_suresi_sn = abs(fark.total_seconds())
     
-    # Performans Tablosuna Kaydet
+    # YENİ: Performans Tablosuna Kaydet
     perf_log = models.PerformanceLog(
         alarm_id=alarm.id,
         room_number=alarm.device_id,
         response_time_seconds=round(mudahale_suresi_sn, 2),
-        efficiency_status="Başarılı" if mudahale_suresi_sn <= 2.0 else "Gecikmeli" # DÜZELTME 2: 5 saniye yerine 2.0 saniye hedefi
+        efficiency_status="Başarılı" if mudahale_suresi_sn <= 2.0 else "Gecikmeli"
     )
     db.add(perf_log)
 
@@ -182,10 +187,58 @@ async def resolve_alarm(alarm_id: int, db: Session = Depends(get_db)):
     }
     await manager.broadcast(json.dumps(kapanis_mesaji))
     
+    freed_nurse = None
+    # 1. Hemşireyi bul ve boşa çıkar
+   # ... (Süre hesaplama ve Performans logu kısımları aynı kalacak) ...
+
+    if alarm.assigned_nurse_id:
+        freed_nurse = db.query(models.Nurse).filter(models.Nurse.id == alarm.assigned_nurse_id).first()
+        
+        if freed_nurse:
+            # DİKKAT: Önce veritabanını kaydetmiyoruz! Direkt kuyruğa bakıyoruz.
+            bekleyen_alarm = db.query(models.AlarmRecord).filter(
+                models.AlarmRecord.status != "ÇÖZÜLDÜ",
+                models.AlarmRecord.assigned_nurse_id == None
+            ).order_by(models.AlarmRecord.created_at.asc()).first()
+            
+            if bekleyen_alarm:
+                # Kuyrukta hasta varsa, Elif'i hiç boşa çıkarmadan direkt oraya kaydırıyoruz.
+                # freed_nurse.status zaten "MEŞGUL", değiştirmemize gerek yok!
+                bekleyen_alarm.assigned_nurse_id = freed_nurse.id
+                
+                # Frontend'in ekranı güncellemesi için mesaj at
+                kuyruk_mesaji = {
+                    "status": "NURSE_REASSIGNED",
+                    "alarm_id": bekleyen_alarm.id,
+                    "nurse": freed_nurse.full_name,
+                    "device_id": bekleyen_alarm.device_id
+                }
+                await manager.broadcast(json.dumps(kuyruk_mesaji))
+            else:
+                # Eğer kuyruk tertemizse (bekleyen yoksa), o zaman Elif'i MÜSAİT yapabiliriz.
+                freed_nurse.status = "MÜSAİT"
+
+    # TÜM DEĞİŞİKLİKLERİ TEK SEFERDE KAYDET (İşte yarış durumunu çözen sihir bu)
+    db.commit()
+    db.refresh(alarm)
+
+    # ... (Kapanış mesajı ve return kısmı aynı kalacak) ...
+            
+            # Frontend'in "Bekleniyor..." yazısını anında güncellemesi için WebSocket mesajı at
+    kuyruk_mesaji = {
+                "status": "NURSE_REASSIGNED",
+                "alarm_id": bekleyen_alarm.id,
+                "nurse": freed_nurse.full_name,
+                "device_id": bekleyen_alarm.device_id
+            }
+    await manager.broadcast(json.dumps(kuyruk_mesaji))
+
     return {
         "status": "Başarılı", 
         "mudahale_suresi_saniye": round(mudahale_suresi_sn, 2)
     }
+    
+   
 
 # 4. Hemşire Bileklik Verisi Güncelleme (Merve İçin)
 @app.post("/api/nurse-status")

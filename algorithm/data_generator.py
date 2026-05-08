@@ -2,21 +2,22 @@ import requests
 import time
 import random
 
-# Hastalar (Odalar)
-CIHAZLAR = ["Oda-401", "Oda-402", "Oda-403", "Oda-408", "Oda-203", "Oda-312"]
-# Hemşire Bileklikleri (Neon'daki ID'ler)
-HEMSIRELER = ["BW-1042", "BW-1055", "BW-1021", "BW-1099"]
+# SADECE 4. KAT CİHAZLARI VE HEMŞİRELERİ
+CIHAZLAR = ["Oda-401", "Oda-402", "Oda-403", "Oda-404", "Oda-405", "Oda-406"]
+HEMSIRELER = ["BW-401", "BW-402", "BW-403", "BW-404", "BW-405"]
 
 def start_live_simulation():
-    print("Gelişmiş simülasyon başlıyor...")
+    print("🏥 4. Kat Simülasyonu Başlatıldı...")
+    print("Veri akışı 5 saniyelik aralıklarla sağlanacak.\n")
+    
     while True:
-        # Rastgele bir cihaz seç ve ona 5 saniye boyunca veri gönder
         secilen_cihaz = random.choice(CIHAZLAR)
-        is_crisis_moment = random.random() < 0.3 # %30 ihtimalle bu cihaz kriz çıkarsın
+        # Kriz ihtimalini %70 yapıldı
+        is_crisis_moment = random.random() < 0.95
         
-        print(f"\n--- {secilen_cihaz} izleniyor ---")
+        print(f"--- {secilen_cihaz} izleniyor ---")
         
-        for _ in range(5): # Seçilen cihaz için 5 saniye kesintisiz veri yolla
+        for _ in range(3): # Seçilen cihaz için 1 saniye kesintisiz veri yolla
             if is_crisis_moment:
                 hr = random.randint(125, 140)
                 spo2 = random.randint(88, 91)
@@ -27,34 +28,36 @@ def start_live_simulation():
             sample_data = {"device_id": secilen_cihaz, "heart_rate": hr, "spo2": spo2}
             
             try:
-                # 1. HASTABAŞI MONİTÖRÜ: Veriyi gönder
+                # 1. Hastabaşı Monitörü Verisi
                 response = requests.post("http://localhost:8000/api/sensor-data", json=sample_data)
                 res_json = response.json()
                 
-                # Backend'in yeni formatına göre kriz kontrolü
                 if res_json.get("status") == "Alarm Tetiklendi":
-                    print(f"!!! KRİZ ONAYLANDI VE ATAMA YAPILDI: {secilen_cihaz} !!!")
+                    print(f"🚨 KRİZ TESPİT EDİLDİ: {secilen_cihaz} | Atanan Hemşire: {res_json.get('nurse')}")
                 elif res_json.get("status") == "Zaten Aktif Kriz Var":
-                    print(f"(! Zaten krizde olan oda: {secilen_cihaz} !)")
+                    pass # Konsolu kirletmemek için zaten aktifse sessiz kalıyoruz
                 else:
-                    print(f"Veri Gönderildi: {hr} BPM | %{spo2} SpO2")
+                    print(f"Veri: {hr} BPM | %{spo2} SpO2")
                 
-                # 2. HEMŞİRE BİLEKLİKLERİ: Arka planda sessizce konum/pil güncelle
-                # (Merve'nin algoritması için veritabanını canlı tutuyoruz)
+                # 2. Hemşire Konumları Arka Planda Güncelleniyor
                 for h_id in HEMSIRELER:
                     nurse_data = {
                         "wristband_id": h_id,
-                        "battery": random.randint(20, 100),
-                        "signal": random.randint(-90, -30),
+                        "battery": random.randint(70, 100),
+                        "signal": random.randint(-85, -40),
                         "location_x": round(random.uniform(0, 100), 2),
                         "location_y": round(random.uniform(0, 100), 2)
                     }
                     requests.post("http://localhost:8000/api/nurse-status", json=nurse_data)
 
             except Exception as e:
-                print("Sunucuya ulaşılamadı!")
+                print("Sunucuya ulaşılamadı! FastAPI çalışıyor mu?")
             
-            time.sleep(1)
+            time.sleep(0.2) # Saniyede 0.5 veri gönderir
+        
+        # ANLATIM İÇİN 1 SANİYE MOLA
+        print("⏳ Ağ dinleniyor, 1 saniye sonra diğer odaya geçilecek...\n")
+        time.sleep(1)
 
 if __name__ == "__main__":
     start_live_simulation()
