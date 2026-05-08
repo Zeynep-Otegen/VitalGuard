@@ -1,5 +1,4 @@
 import random
-random.seed(42)
 from pathlib import Path
 
 import pandas as pd
@@ -31,18 +30,26 @@ class Nurse:
     Simülasyonda her hemşireyi temsil eden sınıf.
 
     nurse_id: Hemşire kimliği
-    floor: Hemşirenin görevli olduğu kat
-    position: Hemşirenin katta bulunduğu varsayılan koridor pozisyonu
+    floor: Hemşirenin sabit görev katı
+    position: Hemşirenin kattaki anlık koridor pozisyonu
+    route: Hemşirenin kendi katında boşta gezerken takip edeceği rota
     available: Hemşirenin müsait olup olmadığını gösterir
     active_tasks: Hemşirenin aktif görev sayısı
     """
 
-    def __init__(self, nurse_id, floor, position):
+    def __init__(self, nurse_id, floor, position, route=None):
         self.nurse_id = nurse_id
         self.floor = floor
         self.position = position
         self.available = True
         self.active_tasks = 0
+
+        # Hemşire sadece kendi katında hareket eder.
+        # Bu listedeki sayılar kattaki koridor pozisyonlarını temsil eder.
+        self.route = route if route is not None else [1, 2, 3, 4, 5, 6, 5, 4, 3, 2]
+
+        # Hemşirenin rotada hangi noktada olduğunu tutar.
+        self.route_index = 0
 
 
 # ==========================================================
@@ -85,6 +92,43 @@ def calculate_distance(nurse, room_position):
     koridor modeli kullanılmıştır.
     """
     return abs(nurse.position - room_position)
+
+def nurse_movement_process(env, nurse):
+    """
+    Hemşirenin boşta olduğu zamanlarda kendi katındaki koridorda hareket etmesini sağlar.
+
+    Hemşire sadece kendi katında hareket eder.
+    Kat değiştirmez.
+    Görevdeyken hareket etmez.
+    """
+    while True:
+        if nurse.available:
+            # Rotadaki bir sonraki koridor pozisyonu alınır.
+            next_position = nurse.route[nurse.route_index]
+
+            # Mevcut pozisyon ile hedef pozisyon arasındaki hareket süresi hesaplanır.
+            move_time = abs(nurse.position - next_position) * 2
+
+            # Aynı pozisyondaysa minimum 1 saniye bekletilir.
+            move_time = max(1, move_time)
+
+            # Hemşirenin o noktaya gitmesi simüle edilir.
+            yield env.timeout(move_time)
+
+            # Hareket tamamlanınca hemşirenin anlık pozisyonu güncellenir.
+            nurse.position = next_position
+
+            #print(
+    #f"[ZAMAN {env.now:.1f}] {nurse.nurse_id} "
+    #f"{nurse.floor}. katta pozisyon {nurse.position} konumuna geçti."
+   #)
+
+            # Rotadaki bir sonraki noktaya geçilir.
+            nurse.route_index = (nurse.route_index + 1) % len(nurse.route)
+
+        else:
+            # Hemşire görevdeyse kendi koridor devriyesini durdurur.
+            yield env.timeout(1)
 
 
 # ==========================================================
@@ -259,44 +303,62 @@ def handle_alarm(env, alarm, nurses, results, mode):
         })
         return
 
-    # Hemşire görevi aldığı anda meşgul yapılır.
+    # Hemşirenin alarm atandığı andaki pozisyonu kaydedilir.
+    nurse_position_at_assignment = selected_nurse.position
+    distance_at_assignment = calculate_distance(selected_nurse, alarm["room_position"])
+
+     # Hemşire görevi aldığı anda meşgul yapılır.
     selected_nurse.available = False
     selected_nurse.active_tasks += 1
 
-    # Gerçek sistemdeki küçük gecikmeler rastgele değerlerle modellenir.
-    notification_delay = random.uniform(2, 5)   # Bildirimin bilekliğe ulaşma süresi
-    accept_delay = random.uniform(5, 15)        # Hemşirenin bildirimi kabul etme süresi
-    travel_time = calculate_distance(selected_nurse, alarm["room_position"]) * 2
-    intervention_time = random.uniform(60, 180) # Müdahale süresi
+     # Gerçek sistemdeki küçük gecikmeler rastgele değerlerle modellenir.
+    notification_delay = random.uniform(2, 5)
+    accept_delay = random.uniform(5, 15)
+    travel_time = distance_at_assignment * 2
+    intervention_time = random.uniform(60, 180)
 
     # Müdahale başlangıç süresi:
     # bekleme + bildirim + kabul + odaya ulaşma
     response_time = waited_time + notification_delay + accept_delay + travel_time
 
-    # Müdahale tamamlanana kadar hemşire meşgul kalır.
-    yield env.timeout(notification_delay + accept_delay + travel_time + intervention_time)
+    # Bildirim ve kabul süresi beklenir.
+    yield env.timeout(notification_delay + accept_delay)
 
-    # Görev bitince hemşire tekrar müsait hale gelir.
+     # Hemşire hasta odasına doğru gider.
+    yield env.timeout(travel_time)
+
+     # Hemşire artık hasta odasına ulaşmıştır.
+     # Kat değişmez; çünkü smart algoritmada zaten aynı kattaki hemşire atanır.
+    selected_nurse.position = alarm["room_position"]
+
+     # Müdahale süresi boyunca hemşire meşgul kalır.
+    yield env.timeout(intervention_time)
+
+     # Görev bitince hemşire tekrar müsait hale gelir.
+     # Hemşire bulunduğu hasta odası pozisyonundan devriyeye devam eder.
     selected_nurse.available = True
     selected_nurse.active_tasks -= 1
 
     # Başarılı alarm kaydı tutulur.
     results.append({
-        "alarm_id": alarm["alarm_id"],
-        "algorithm": mode,
-        "alarm_time": round(alarm["sim_time"], 2),
-        "device_id": alarm["device_id"],
-        "floor": alarm["floor"],
-        "heart_rate": alarm["heart_rate"],
-        "spo2": alarm["spo2"],
-        "status": "completed",
-        "selected_nurse": selected_nurse.nurse_id,
-        "notification_count": notification_count,
-        "waiting_time": round(waited_time, 2),
-        "response_time": round(response_time, 2),
-        "intervention_time": round(intervention_time, 2),
-        "completed_at": round(env.now, 2)
-    })
+    "alarm_id": alarm["alarm_id"],
+    "algorithm": mode,
+    "alarm_time": round(alarm["sim_time"], 2),
+    "device_id": alarm["device_id"],
+    "floor": alarm["floor"],
+    "room_position": alarm["room_position"],
+    "heart_rate": alarm["heart_rate"],
+    "spo2": alarm["spo2"],
+    "status": "completed",
+    "selected_nurse": selected_nurse.nurse_id,
+    "nurse_position_at_assignment": nurse_position_at_assignment,
+    "distance_at_assignment": distance_at_assignment,
+    "notification_count": notification_count,
+    "waiting_time": round(waited_time, 2),
+    "response_time": round(response_time, 2),
+    "intervention_time": round(intervention_time, 2),
+    "completed_at": round(env.now, 2)
+})
 
 
 # ==========================================================
@@ -306,17 +368,45 @@ def load_alarms():
     """
     Filtrelenmiş kritik alarm CSV dosyasını okur.
 
-    CSV içerisindeki:
-    - Cihaz_ID bilgisinden kat bilgisi çıkarılır.
-    - Cihaz_ID bilgisinden oda pozisyonu çıkarılır.
-    - Her alarm için simülasyon zamanı oluşturulur.
+    Orijinal CSV'deki alarm değerleri korunur.
+    Ancak simülasyon senaryosu için alarmlar 2, 3 ve 4. katlara
+    dengeli şekilde dağıtılır.
+
+    Yeni model:
+    - 3 kat: 2, 3, 4
+    - Her katta 6 oda: 1, 2, 3, 4, 5, 6
     """
     df = pd.read_csv(CSV_PATH)
 
     df["alarm_id"] = range(1, len(df) + 1)
 
-    df["floor"] = df["Cihaz_ID"].apply(extract_floor)
-    df["room_position"] = df["Cihaz_ID"].apply(extract_room_position)
+    # Simülasyon senaryosu için kullanılan katlar ve oda pozisyonları
+    floors = [2, 3, 4]
+    room_positions = [1, 2, 3, 4, 5, 6]
+
+    # Alarmlar katlara dengeli dağıtılır.
+    # Örnek:
+    # 1. alarm -> 2. kat
+    # 2. alarm -> 3. kat
+    # 3. alarm -> 4. kat
+    df["floor"] = [
+        floors[i % len(floors)]
+        for i in range(len(df))
+    ]
+
+    # Oda pozisyonu her 3 alarmda bir ilerler.
+    # Böylece her katta 1-6 arası tüm odalar kullanılır.
+    df["room_position"] = [
+        room_positions[(i // len(floors)) % len(room_positions)]
+        for i in range(len(df))
+    ]
+
+    # Yeni simülasyon oda kimliği oluşturulur.
+    # Örnek: floor=2, room_position=4 -> Oda-204
+    df["sim_device_id"] = df.apply(
+        lambda row: f"Oda-{int(row['floor'])}{int(row['room_position']):02d}",
+        axis=1
+    )
 
     # CSV'deki zamanlar birbirine çok yakın olduğu için,
     # simülasyonda alarmlar 20 saniye arayla verilmiştir.
@@ -328,7 +418,7 @@ def load_alarms():
         alarms.append({
             "alarm_id": int(row["alarm_id"]),
             "sim_time": float(row["sim_time"]),
-            "device_id": row["Cihaz_ID"],
+            "device_id": row["sim_device_id"],
             "floor": int(row["floor"]),
             "room_position": int(row["room_position"]),
             "heart_rate": int(row["Kalp_Atisi"]),
@@ -337,8 +427,6 @@ def load_alarms():
         })
 
     return alarms
-
-
 # ==========================================================
 # 9. HEMŞİRELERİ OLUŞTURMA
 # ==========================================================
@@ -346,23 +434,48 @@ def create_nurses():
     """
     Simülasyonda kullanılacak hemşireleri oluşturur.
 
-    Her hemşire için:
-    - görevli olduğu kat
-    - kattaki başlangıç pozisyonu
-    tanımlanır.
+    Yeni model:
+    - 3 kat vardır: 2, 3 ve 4. kat
+    - Her katta 4 hemşire vardır
+    - Her katta 6 oda pozisyonu vardır
+    - Hemşireler sadece kendi katlarında hareket eder
     """
     return [
+        # 4. kat hemşireleri
         Nurse("Hemsire-4A", floor=4, position=1),
-        Nurse("Hemsire-4B", floor=4, position=3),
-        Nurse("Hemsire-4C", floor=4, position=6),
-        Nurse("Hemsire-4D", floor=4, position=8),
+        Nurse("Hemsire-4B", floor=4, position=2),
+        Nurse("Hemsire-4C", floor=4, position=4),
+        Nurse("Hemsire-4D", floor=4, position=6),
 
-        Nurse("Hemsire-3A", floor=3, position=2),
-        Nurse("Hemsire-3B", floor=3, position=6),
+        # 3. kat hemşireleri
+        Nurse("Hemsire-3A", floor=3, position=1),
+        Nurse("Hemsire-3B", floor=3, position=2),
+        Nurse("Hemsire-3C", floor=3, position=4),
+        Nurse("Hemsire-3D", floor=3, position=6),
 
-        Nurse("Hemsire-2A", floor=2, position=2),
-        Nurse("Hemsire-2B", floor=2, position=6),
+        # 2. kat hemşireleri
+        Nurse("Hemsire-2A", floor=2, position=1),
+        Nurse("Hemsire-2B", floor=2, position=2),
+        Nurse("Hemsire-2C", floor=2, position=4),
+        Nurse("Hemsire-2D", floor=2, position=6),
     ]
+
+def test_nurse_movement():
+    """
+    Sadece hemşire hareketlerini test eder.
+    Alarm simülasyonu çalışmaz.
+    """
+    env = simpy.Environment()
+    nurses = create_nurses()
+
+    for nurse in nurses:
+        env.process(nurse_movement_process(env, nurse))
+
+    print("\nHemşire hareket testi başladı.\n")
+
+    env.run(until=30)
+
+    print("\nHemşire hareket testi bitti.\n")
 
 
 # ==========================================================
@@ -403,11 +516,14 @@ def print_summary(results_df, total_alarm_count):
         print("\nHemşire görev dağılımı:")
         print(nurse_task_counts)
 
+        print("\nKat bazlı alarm durumları:")
+    print(results_df.groupby(["floor", "status"]).size())
+
 
 # ==========================================================
 # 11. SİMÜLASYONU ÇALIŞTIRMA
 # ==========================================================
-def run_simulation(mode):
+def run_simulation(mode, seed=42):
     """
     Belirtilen algoritma moduna göre simülasyonu çalıştırır.
 
@@ -415,6 +531,7 @@ def run_simulation(mode):
     - baseline
     - smart
     """
+    random.seed(seed)
     RESULTS_PATH.mkdir(parents=True, exist_ok=True)
 
     env = simpy.Environment()
@@ -422,12 +539,17 @@ def run_simulation(mode):
     alarms = load_alarms()
     results = []
 
-    # Her alarm için ayrı bir SimPy süreci başlatılır.
+  # Her hemşire için ayrı bir SimPy hareket süreci başlatılır.
+    for nurse in nurses:
+     env.process(nurse_movement_process(env, nurse))
+
+# Her alarm için ayrı bir SimPy süreci başlatılır.
     for alarm in alarms:
-        env.process(handle_alarm(env, alarm, nurses, results, mode))
+     env.process(handle_alarm(env, alarm, nurses, results, mode))
 
     # Tüm olaylar tamamlanana kadar simülasyon çalışır.
-    env.run()
+    simulation_end_time = max(alarm["sim_time"] for alarm in alarms) + 500
+    env.run(until=simulation_end_time)
 
     results_df = pd.DataFrame(results)
     results_df = results_df.sort_values("alarm_id")
@@ -443,11 +565,15 @@ def run_simulation(mode):
 
 
 # ==========================================================
+
 # 12. PROGRAMIN BAŞLANGIÇ NOKTASI
 # ==========================================================
 if __name__ == "__main__":
+    # Hemşire hareket testi tamamlandı.
+    # test_nurse_movement()
+
     # Önce baseline algoritması çalıştırılır.
-    run_simulation("baseline")
+    run_simulation("baseline", seed=42)
 
     # Ardından önerilen smart algoritma çalıştırılır.
-    run_simulation("smart")
+    run_simulation("smart", seed=42)
