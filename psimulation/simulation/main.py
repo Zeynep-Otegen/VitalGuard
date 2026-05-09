@@ -255,7 +255,7 @@ def select_nurse_by_mode(alarm, nurses, mode):
 # ==========================================================
 # 7. SİMPY ALARM SÜRECİ
 # ==========================================================
-def handle_alarm(env, alarm, nurses, results, mode):
+def handle_alarm(env, alarm, nurses, results, mode, intervention_time_range=(60, 180)):
     """
     Her alarm için çalışan SimPy sürecidir.
 
@@ -315,7 +315,10 @@ def handle_alarm(env, alarm, nurses, results, mode):
     notification_delay = random.uniform(2, 5)
     accept_delay = random.uniform(5, 15)
     travel_time = distance_at_assignment * 2
-    intervention_time = random.uniform(60, 180)
+    intervention_time = random.uniform(
+    intervention_time_range[0],
+    intervention_time_range[1]
+)
 
     # Müdahale başlangıç süresi:
     # bekleme + bildirim + kabul + odaya ulaşma
@@ -345,7 +348,7 @@ def handle_alarm(env, alarm, nurses, results, mode):
     "algorithm": mode,
     "alarm_time": round(alarm["sim_time"], 2),
     "device_id": alarm["device_id"],
-    "floor": alarm["floor"],
+    "floor": alarm["floor"],6
     "room_position": alarm["room_position"],
     "heart_rate": alarm["heart_rate"],
     "spo2": alarm["spo2"],
@@ -364,7 +367,7 @@ def handle_alarm(env, alarm, nurses, results, mode):
 # ==========================================================
 # 8. CSV VERİSİNİ SİMÜLASYONA HAZIRLAMA
 # ==========================================================
-def load_alarms():
+def load_alarms(alarm_interval=20):
     """
     Filtrelenmiş kritik alarm CSV dosyasını okur.
 
@@ -410,7 +413,7 @@ def load_alarms():
 
     # CSV'deki zamanlar birbirine çok yakın olduğu için,
     # simülasyonda alarmlar 20 saniye arayla verilmiştir.
-    df["sim_time"] = df.index * 20
+    df["sim_time"] = df.index * alarm_interval
 
     alarms = []
 
@@ -523,7 +526,13 @@ def print_summary(results_df, total_alarm_count):
 # ==========================================================
 # 11. SİMÜLASYONU ÇALIŞTIRMA
 # ==========================================================
-def run_simulation(mode, seed=42):
+def run_simulation(
+    mode,
+    seed=42,
+    scenario_name="normal_load",
+    alarm_interval=20,
+    intervention_time_range=(60, 180)
+):
     """
     Belirtilen algoritma moduna göre simülasyonu çalıştırır.
 
@@ -536,7 +545,7 @@ def run_simulation(mode, seed=42):
 
     env = simpy.Environment()
     nurses = create_nurses()
-    alarms = load_alarms()
+    alarms = load_alarms(alarm_interval=alarm_interval)
     results = []
 
   # Her hemşire için ayrı bir SimPy hareket süreci başlatılır.
@@ -545,7 +554,16 @@ def run_simulation(mode, seed=42):
 
 # Her alarm için ayrı bir SimPy süreci başlatılır.
     for alarm in alarms:
-     env.process(handle_alarm(env, alarm, nurses, results, mode))
+     env.process(
+        handle_alarm(
+            env,
+            alarm,
+            nurses,
+            results,
+            mode,
+            intervention_time_range
+        )
+    )
 
     # Tüm olaylar tamamlanana kadar simülasyon çalışır.
     simulation_end_time = max(alarm["sim_time"] for alarm in alarms) + 500
@@ -555,7 +573,7 @@ def run_simulation(mode, seed=42):
     results_df = results_df.sort_values("alarm_id")
 
     # Her algoritma için ayrı sonuç dosyası oluşturulur.
-    scenario_results_path = RESULTS_PATH / f"{mode}_simulation_results.csv"
+    scenario_results_path = RESULTS_PATH / f"{scenario_name}_{mode}_simulation_results.csv"
     results_df.to_csv(scenario_results_path, index=False)
 
     print(f"\nÇalışan algoritma: {mode}")
@@ -569,11 +587,48 @@ def run_simulation(mode, seed=42):
 # 12. PROGRAMIN BAŞLANGIÇ NOKTASI
 # ==========================================================
 if __name__ == "__main__":
-    # Hemşire hareket testi tamamlandı.
-    # test_nurse_movement()
+    # Normal yük testi
+    run_simulation(
+        mode="baseline",
+        seed=42,
+        scenario_name="normal_load",
+        alarm_interval=20
+    )
 
-    # Önce baseline algoritması çalıştırılır.
-    run_simulation("baseline", seed=42)
+    run_simulation(
+        mode="smart",
+        seed=42,
+        scenario_name="normal_load",
+        alarm_interval=20
+    )
 
-    # Ardından önerilen smart algoritma çalıştırılır.
-    run_simulation("smart", seed=42)
+    # Yoğun yük testi
+    run_simulation(
+        mode="baseline",
+        seed=42,
+        scenario_name="high_load",
+        alarm_interval=10
+    )
+
+    run_simulation(
+        mode="smart",
+        seed=42,
+        scenario_name="high_load",
+        alarm_interval=10
+    )
+        # Eskalasyon testi
+    run_simulation(
+        mode="baseline",
+        seed=42,
+        scenario_name="escalation_test",
+        alarm_interval=5,
+        intervention_time_range=(180, 300)
+    )
+
+    run_simulation(
+        mode="smart",
+        seed=42,
+        scenario_name="escalation_test",
+        alarm_interval=5,
+        intervention_time_range=(180, 300)
+    )

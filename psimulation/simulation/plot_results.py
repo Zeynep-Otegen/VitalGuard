@@ -9,19 +9,20 @@ import matplotlib.pyplot as plt
 # ==========================================================
 BASE_DIR = Path(__file__).resolve().parent.parent
 RESULTS_PATH = BASE_DIR / "results"
-PLOTS_PATH = RESULTS_PATH / "plots"
+
+# Normal yük ana karşılaştırma grafikleri için ayrı klasör
+PLOTS_PATH = RESULTS_PATH / "normal_comparison_plots"
 
 BASELINE_CSV = RESULTS_PATH / "baseline_simulation_results.csv"
 SMART_CSV = RESULTS_PATH / "smart_simulation_results.csv"
 
 
 # ==========================================================
-# 2. SONUÇLARI YÜKLEME
+# 2. SONUÇLARI OKUMA
 # ==========================================================
 def load_results():
     baseline_df = pd.read_csv(BASELINE_CSV)
     smart_df = pd.read_csv(SMART_CSV)
-
     return baseline_df, smart_df
 
 
@@ -29,26 +30,27 @@ def load_results():
 # 3. METRİK HESAPLAMA
 # ==========================================================
 def calculate_metrics(df):
-    total_alarms = len(df)
+    total_alarm = len(df)
 
     completed = df[df["status"] == "completed"]
     no_nurse = df[df["status"] == "no_available_nurse"]
 
-    success_rate = (len(completed) / total_alarms) * 100 if total_alarms > 0 else 0
-    fail_rate = (len(no_nurse) / total_alarms) * 100 if total_alarms > 0 else 0
+    completed_count = len(completed)
+    no_nurse_count = len(no_nurse)
+
+    success_rate = (completed_count / total_alarm) * 100 if total_alarm > 0 else 0
 
     total_notifications = df["notification_count"].sum()
-    avg_notifications = df["notification_count"].mean() if total_alarms > 0 else 0
+    avg_notifications = df["notification_count"].mean()
 
     avg_response_time = completed["response_time"].mean() if not completed.empty else 0
     avg_waiting_time = completed["waiting_time"].mean() if not completed.empty else 0
 
     return {
-        "total_alarms": total_alarms,
-        "completed_count": len(completed),
-        "no_nurse_count": len(no_nurse),
+        "total_alarm": total_alarm,
+        "completed_count": completed_count,
+        "no_nurse_count": no_nurse_count,
         "success_rate": success_rate,
-        "fail_rate": fail_rate,
         "total_notifications": total_notifications,
         "avg_notifications": avg_notifications,
         "avg_response_time": avg_response_time,
@@ -57,8 +59,48 @@ def calculate_metrics(df):
 
 
 # ==========================================================
-# 4. GRAFİK FONKSİYONLARI
+# 4. GRAFİKLER
 # ==========================================================
+def plot_total_notifications(baseline_metrics, smart_metrics):
+    labels = ["Baseline", "Smart"]
+    values = [
+        baseline_metrics["total_notifications"],
+        smart_metrics["total_notifications"]
+    ]
+
+    plt.figure(figsize=(8, 5))
+    plt.bar(labels, values)
+    plt.title("Toplam Gönderilen Bildirim Karşılaştırması")
+    plt.ylabel("Bildirim Sayısı")
+
+    for i, value in enumerate(values):
+        plt.text(i, value + 8, f"{int(value)}", ha="center")
+
+    plt.tight_layout()
+    plt.savefig(PLOTS_PATH / "01_toplam_bildirim_karsilastirmasi.png", dpi=300)
+    plt.close()
+
+
+def plot_avg_response_time(baseline_metrics, smart_metrics):
+    labels = ["Baseline", "Smart"]
+    values = [
+        baseline_metrics["avg_response_time"],
+        smart_metrics["avg_response_time"]
+    ]
+
+    plt.figure(figsize=(8, 5))
+    plt.bar(labels, values)
+    plt.title("Ortalama Müdahale Başlangıç Süresi Karşılaştırması")
+    plt.ylabel("Süre (saniye)")
+
+    for i, value in enumerate(values):
+        plt.text(i, value + 0.25, f"{value:.2f} sn", ha="center")
+
+    plt.tight_layout()
+    plt.savefig(PLOTS_PATH / "02_ortalama_mudahale_baslangic_suresi.png", dpi=300)
+    plt.close()
+
+
 def plot_success_rate(baseline_metrics, smart_metrics):
     labels = ["Baseline", "Smart"]
     values = [
@@ -76,11 +118,11 @@ def plot_success_rate(baseline_metrics, smart_metrics):
         plt.text(i, value + 2, f"%{value:.2f}", ha="center")
 
     plt.tight_layout()
-    plt.savefig(PLOTS_PATH / "01_success_rate_comparison.png", dpi=300)
+    plt.savefig(PLOTS_PATH / "03_basari_orani_karsilastirmasi.png", dpi=300)
     plt.close()
 
 
-def plot_completed_vs_failed(baseline_metrics, smart_metrics):
+def plot_completed_unassigned(baseline_metrics, smart_metrics):
     labels = ["Baseline", "Smart"]
 
     completed_values = [
@@ -88,7 +130,7 @@ def plot_completed_vs_failed(baseline_metrics, smart_metrics):
         smart_metrics["completed_count"]
     ]
 
-    failed_values = [
+    unassigned_values = [
         baseline_metrics["no_nurse_count"],
         smart_metrics["no_nurse_count"]
     ]
@@ -107,7 +149,7 @@ def plot_completed_vs_failed(baseline_metrics, smart_metrics):
 
     plt.bar(
         [i + width / 2 for i in x],
-        failed_values,
+        unassigned_values,
         width,
         label="Atanamayan Alarm"
     )
@@ -120,108 +162,15 @@ def plot_completed_vs_failed(baseline_metrics, smart_metrics):
     for i, value in enumerate(completed_values):
         plt.text(i - width / 2, value + 1, str(value), ha="center")
 
-    for i, value in enumerate(failed_values):
+    for i, value in enumerate(unassigned_values):
         plt.text(i + width / 2, value + 1, str(value), ha="center")
 
     plt.tight_layout()
-    plt.savefig(PLOTS_PATH / "02_completed_failed_alarm_comparison.png", dpi=300)
+    plt.savefig(PLOTS_PATH / "04_tamamlanan_atanamayan_alarm_karsilastirmasi.png", dpi=300)
     plt.close()
 
 
-def plot_total_notifications(baseline_metrics, smart_metrics):
-    labels = ["Baseline", "Smart"]
-    values = [
-        baseline_metrics["total_notifications"],
-        smart_metrics["total_notifications"]
-    ]
-
-    plt.figure(figsize=(8, 5))
-    plt.bar(labels, values)
-    plt.title("Toplam Gönderilen Bildirim Sayısı Karşılaştırması")
-    plt.ylabel("Bildirim Sayısı")
-
-    for i, value in enumerate(values):
-        plt.text(i, value + 5, f"{int(value)}", ha="center")
-
-    plt.tight_layout()
-    plt.savefig(PLOTS_PATH / "03_total_notifications_comparison.png", dpi=300)
-    plt.close()
-
-
-def plot_avg_notifications(baseline_metrics, smart_metrics):
-    labels = ["Baseline", "Smart"]
-    values = [
-        baseline_metrics["avg_notifications"],
-        smart_metrics["avg_notifications"]
-    ]
-
-    plt.figure(figsize=(8, 5))
-    plt.bar(labels, values)
-    plt.title("Alarm Başına Ortalama Bildirim Sayısı Karşılaştırması")
-    plt.ylabel("Ortalama Bildirim Sayısı")
-
-    for i, value in enumerate(values):
-        plt.text(i, value + 0.05, f"{value:.2f}", ha="center")
-
-    plt.tight_layout()
-    plt.savefig(PLOTS_PATH / "04_avg_notifications_comparison.png", dpi=300)
-    plt.close()
-
-
-def plot_avg_response_time(baseline_metrics, smart_metrics):
-    labels = ["Baseline", "Smart"]
-    values = [
-        baseline_metrics["avg_response_time"],
-        smart_metrics["avg_response_time"]
-    ]
-
-    plt.figure(figsize=(8, 5))
-    plt.bar(labels, values)
-    plt.title("Ortalama Müdahale Başlangıç Süresi Karşılaştırması")
-    plt.ylabel("Süre (saniye)")
-
-    for i, value in enumerate(values):
-        plt.text(i, value + 0.2, f"{value:.2f} sn", ha="center")
-
-    plt.tight_layout()
-    plt.savefig(PLOTS_PATH / "05_avg_response_time_comparison.png", dpi=300)
-    plt.close()
-
-
-def plot_nurse_distribution(df, title, filename):
-    completed = df[df["status"] == "completed"]
-
-    nurse_counts = completed["selected_nurse"].value_counts().sort_index()
-
-    plt.figure(figsize=(11, 6))
-    plt.bar(nurse_counts.index, nurse_counts.values)
-    plt.title(title)
-    plt.ylabel("Görev Sayısı")
-    plt.xticks(rotation=45)
-
-    for i, value in enumerate(nurse_counts.values):
-        plt.text(i, value + 0.2, str(value), ha="center")
-
-    plt.tight_layout()
-    plt.savefig(PLOTS_PATH / filename, dpi=300)
-    plt.close()
-
-
-def plot_floor_distribution(df, title, filename):
-    floor_counts = df.groupby(["floor", "status"]).size().unstack(fill_value=0)
-
-    floor_counts.plot(kind="bar", figsize=(8, 5))
-    plt.title(title)
-    plt.xlabel("Kat")
-    plt.ylabel("Alarm Sayısı")
-    plt.xticks(rotation=0)
-
-    plt.tight_layout()
-    plt.savefig(PLOTS_PATH / filename, dpi=300)
-    plt.close()
-
-
-def create_comparison_table_image(baseline_metrics, smart_metrics):
+def create_comparison_table(baseline_metrics, smart_metrics):
     notification_reduction = (
         (
             baseline_metrics["total_notifications"]
@@ -230,67 +179,27 @@ def create_comparison_table_image(baseline_metrics, smart_metrics):
         / baseline_metrics["total_notifications"]
     ) * 100
 
-    response_improvement = (
+    response_difference = (
         baseline_metrics["avg_response_time"]
         - smart_metrics["avg_response_time"]
     )
 
     table_data = [
-        [
-            "Toplam alarm",
-            baseline_metrics["total_alarms"],
-            smart_metrics["total_alarms"]
-        ],
-        [
-            "Tamamlanan alarm",
-            baseline_metrics["completed_count"],
-            smart_metrics["completed_count"]
-        ],
-        [
-            "Atanamayan alarm",
-            baseline_metrics["no_nurse_count"],
-            smart_metrics["no_nurse_count"]
-        ],
-        [
-            "Başarı oranı",
-            f"%{baseline_metrics['success_rate']:.2f}",
-            f"%{smart_metrics['success_rate']:.2f}"
-        ],
-        [
-            "Toplam bildirim",
-            int(baseline_metrics["total_notifications"]),
-            int(smart_metrics["total_notifications"])
-        ],
-        [
-            "Alarm başına bildirim",
-            f"{baseline_metrics['avg_notifications']:.2f}",
-            f"{smart_metrics['avg_notifications']:.2f}"
-        ],
-        [
-            "Ortalama müdahale başlangıcı",
-            f"{baseline_metrics['avg_response_time']:.2f} sn",
-            f"{smart_metrics['avg_response_time']:.2f} sn"
-        ],
-        [
-            "Ortalama bekleme süresi",
-            f"{baseline_metrics['avg_waiting_time']:.2f} sn",
-            f"{smart_metrics['avg_waiting_time']:.2f} sn"
-        ],
-        [
-            "Bildirim azaltma oranı",
-            "-",
-            f"%{notification_reduction:.2f}"
-        ],
-        [
-            "Müdahale süresi farkı",
-            "-",
-            f"{response_improvement:.2f} sn"
-        ],
+        ["Toplam alarm", baseline_metrics["total_alarm"], smart_metrics["total_alarm"]],
+        ["Tamamlanan alarm", baseline_metrics["completed_count"], smart_metrics["completed_count"]],
+        ["Atanamayan alarm", baseline_metrics["no_nurse_count"], smart_metrics["no_nurse_count"]],
+        ["Başarı oranı", f"%{baseline_metrics['success_rate']:.2f}", f"%{smart_metrics['success_rate']:.2f}"],
+        ["Toplam bildirim", int(baseline_metrics["total_notifications"]), int(smart_metrics["total_notifications"])],
+        ["Alarm başına bildirim", f"{baseline_metrics['avg_notifications']:.2f}", f"{smart_metrics['avg_notifications']:.2f}"],
+        ["Ortalama müdahale başlangıcı", f"{baseline_metrics['avg_response_time']:.2f} sn", f"{smart_metrics['avg_response_time']:.2f} sn"],
+        ["Ortalama bekleme süresi", f"{baseline_metrics['avg_waiting_time']:.2f} sn", f"{smart_metrics['avg_waiting_time']:.2f} sn"],
+        ["Bildirim azaltma oranı", "-", f"%{notification_reduction:.2f}"],
+        ["Müdahale süresi iyileşmesi", "-", f"{response_difference:.2f} sn"],
     ]
 
     columns = ["Metrik", "Baseline", "Smart"]
 
-    plt.figure(figsize=(10, 5))
+    plt.figure(figsize=(10, 5.5))
     plt.axis("off")
 
     table = plt.table(
@@ -307,7 +216,7 @@ def create_comparison_table_image(baseline_metrics, smart_metrics):
     plt.title("Baseline ve Smart Algoritma Karşılaştırma Tablosu", pad=20)
 
     plt.tight_layout()
-    plt.savefig(PLOTS_PATH / "09_comparison_table.png", dpi=300)
+    plt.savefig(PLOTS_PATH / "05_baseline_smart_karsilastirma_tablosu.png", dpi=300)
     plt.close()
 
 
@@ -322,52 +231,22 @@ def main():
     baseline_metrics = calculate_metrics(baseline_df)
     smart_metrics = calculate_metrics(smart_df)
 
-    plot_success_rate(baseline_metrics, smart_metrics)
-
-    plot_completed_vs_failed(baseline_metrics, smart_metrics)
-
     plot_total_notifications(baseline_metrics, smart_metrics)
-
-    plot_avg_notifications(baseline_metrics, smart_metrics)
-
     plot_avg_response_time(baseline_metrics, smart_metrics)
+    plot_success_rate(baseline_metrics, smart_metrics)
+    plot_completed_unassigned(baseline_metrics, smart_metrics)
+    create_comparison_table(baseline_metrics, smart_metrics)
 
-    plot_nurse_distribution(
-        baseline_df,
-        "Baseline Hemşire Görev Dağılımı",
-        "06_baseline_nurse_distribution.png"
-    )
-
-    plot_nurse_distribution(
-        smart_df,
-        "Smart Hemşire Görev Dağılımı",
-        "07_smart_nurse_distribution.png"
-    )
-
-    plot_floor_distribution(
-        smart_df,
-        "Smart Algoritma Kat Bazlı Alarm Durumu",
-        "08_smart_floor_alarm_distribution.png"
-    )
-
-    create_comparison_table_image(baseline_metrics, smart_metrics)
-
-    print("Grafikler başarıyla oluşturuldu.")
+    print("Normal yük karşılaştırma grafikleri başarıyla oluşturuldu.")
     print(f"Kayıt klasörü: {PLOTS_PATH}")
 
-    print("\nGüncel karşılaştırma özeti:")
+    print("\nKullanılan güncel değerler:")
     print(f"Baseline toplam bildirim: {baseline_metrics['total_notifications']}")
     print(f"Smart toplam bildirim: {smart_metrics['total_notifications']}")
     print(f"Baseline başarı oranı: %{baseline_metrics['success_rate']:.2f}")
     print(f"Smart başarı oranı: %{smart_metrics['success_rate']:.2f}")
-    print(
-        "Baseline ortalama müdahale başlangıcı: "
-        f"{baseline_metrics['avg_response_time']:.2f} sn"
-    )
-    print(
-        "Smart ortalama müdahale başlangıcı: "
-        f"{smart_metrics['avg_response_time']:.2f} sn"
-    )
+    print(f"Baseline ortalama müdahale başlangıcı: {baseline_metrics['avg_response_time']:.2f} sn")
+    print(f"Smart ortalama müdahale başlangıcı: {smart_metrics['avg_response_time']:.2f} sn")
 
 
 if __name__ == "__main__":
